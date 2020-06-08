@@ -8,6 +8,7 @@ import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, 
 import { Engine, calcDamage, calcAbsorb, calcHeal } from '../../components/engine/engine';
 import { CardAction } from '../../components/action/action';
 import Power from '../../components/power/power';
+import { Constants } from '../../data/const';
 
 export const enum GameStage {
   PLAY,
@@ -41,6 +42,8 @@ export interface GameState {
   enemySelectedCard: CardInstance | null
   allyPhases: Array<PhaseData>
   enemyPhases: Array<PhaseData>
+  allyPhaseNumber: number
+  enemyPhaseNumber: number
   stage: GameStage
   phaseCounters: Array<PhaseCounter>
   phaseLimit: number
@@ -61,8 +64,10 @@ export class Game extends React.Component<GameProps, GameState> {
       enemyChinpoko: 0,
       selectedCard: null,
       enemySelectedCard: null,
-      allyPhases: initPhaseGroupData(5),
-      enemyPhases: initPhaseGroupData(5),
+      allyPhases: initPhaseGroupData(Constants.startingPhases),
+      enemyPhases: initPhaseGroupData(Constants.startingPhases),
+      allyPhaseNumber: Constants.startingPhases,
+      enemyPhaseNumber: Constants.startingPhases,
       stage: GameStage.PLAY,
       phaseCounters: [],
       phaseLimit: 0,
@@ -71,8 +76,8 @@ export class Game extends React.Component<GameProps, GameState> {
   }
 
   componentDidMount() {
-    this.drawCards(true, 5);
-    this.drawCards(false, 5);
+    this.drawCards(true, Constants.startingHandSize);
+    this.drawCards(false, Constants.startingHandSize);
   }
 
   drawCards = (ally: boolean, times: number) => {
@@ -150,10 +155,10 @@ export class Game extends React.Component<GameProps, GameState> {
     }
     const instance = this.state.selectedCard;
     if ( shouldPhaseBeClicked(phaseNumber, instance, this.state.allyPhases) ) {
-      this.setState({
-        allyPhases: setPhaseGroupData(phaseNumber, instance, this.state.allyPhases),
+      this.setState((state) => ({
+        allyPhases: setPhaseGroupData(phaseNumber, instance, state.allyPhases),
         selectedCard: null
-      })
+      }))
     }
   }
 
@@ -165,9 +170,9 @@ export class Game extends React.Component<GameProps, GameState> {
     const powerList = {...this.props.allyPowerList};
     const card = instance.source == CardSource.DECK ? deckList[instance.id] : powerList[instance.id];
     card.isClicked = false;
-    this.setState({
-      allyPhases: deleteFromPhaseGroupData(instance, this.state.allyPhases),
-    })
+    this.setState((state) => ({
+      allyPhases: deleteFromPhaseGroupData(instance, state.allyPhases),
+    }))
     this.props.setDeckList(deckList, true);
     this.props.setPowerList(powerList, true);
   }
@@ -190,6 +195,8 @@ export class Game extends React.Component<GameProps, GameState> {
       enemySelectedCard: state.selectedCard,
       allyPhases: state.enemyPhases,
       enemyPhases: state.allyPhases,
+      allyPhaseNumber: state.enemyPhaseNumber,
+      enemyPhaseNumber: state.allyPhaseNumber
     }))
   }
 
@@ -296,12 +303,12 @@ export class Game extends React.Component<GameProps, GameState> {
       } else {
         this.drawCards(true, 1);
         this.drawCards(false, 1);
-        this.setState({
+        this.setState((state) => ({
           stage: GameStage.PLAY,
-          allyPhases: initPhaseGroupData(5),
-          enemyPhases: initPhaseGroupData(5),
+          allyPhases: initPhaseGroupData(state.allyPhaseNumber),
+          enemyPhases: initPhaseGroupData(state.enemyPhaseNumber),
           currentPhase: null,
-        })
+        }))
       }
     }
   }
@@ -429,14 +436,14 @@ export class Game extends React.Component<GameProps, GameState> {
   renderField() {
     const enemyChinpoko: ChinpokoData = this.props.enemyTeam[this.state.enemyChinpoko];
     const allyChinpoko: ChinpokoData = this.props.allyTeam[this.state.allyChinpoko];
-    const allyPower: CardInstance = allyChinpoko.powerId ? this.props.allyPowerList[allyChinpoko.powerId] : null;
+    const allyPower: CardInstance = allyChinpoko.powerId ? this.props.allyPowerList[allyChinpoko.powerId] : this.props.allyPowerList[0];
     const stage: GameStage = this.state.stage;
 
     return (
       <div className = "game-component__field">
         <Chinpoko chinpoko = {enemyChinpoko} ally={false} />
         <Engine />
-        <Chinpoko chinpoko = {allyChinpoko} power={allyPower} ally={true} />
+        <Chinpoko chinpoko = {allyChinpoko} ally={true} />
         <Power instance={allyPower} stage={stage} onClick={() => this.handleCardClick(allyPower)} />
       </div>
     );
