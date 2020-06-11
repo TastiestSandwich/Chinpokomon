@@ -61,6 +61,8 @@ interface CardProps {
 	ally: boolean
   stage: GameStage
 	onClick?: () => void
+  antiCheat: boolean
+  handHover: boolean
 }
 
 export default class Card extends React.Component<CardProps, {} > {
@@ -70,10 +72,13 @@ export default class Card extends React.Component<CardProps, {} > {
 		const type = instance.card.type
 		const ccc = "card-component"
 		const allyClass = ally ? `${ccc}--is-ally` : `${ccc}--is-enemy`
-		const isClickedClass = instance.isClicked ? `${ccc}--is-clicked` : ""
-		const isClickableClass = !!onClick && !instance.isClicked ? `${ccc}--is-clickable` : ""
-    const show = ally && this.props.stage === GameStage.PLAY
+
+    const showByAntiCheat = !this.props.antiCheat || this.props.handHover
+    const show = ally && this.props.stage === GameStage.PLAY && showByAntiCheat
     const hideClass = show ? "" : `${ccc}--is-hide` 
+    
+		const isClickedClass = instance.isClicked && showByAntiCheat ? `${ccc}--is-clicked` : ""
+		const isClickableClass = !!onClick && !instance.isClicked ? `${ccc}--is-clickable` : ""
 
 		return(
 			<div className={`${ccc} ${ccc}--type-${type.name} ${allyClass} ${isClickedClass} ${isClickableClass} ${hideClass}`} onClick={onClick}>

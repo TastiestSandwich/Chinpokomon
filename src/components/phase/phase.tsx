@@ -118,11 +118,22 @@ interface PhaseGroupProps {
 	ally: boolean
 	stage: GameStage
 	currentPhase: CurrentPhase | null
+	antiCheat: boolean
 	onPhaseClick?: (phaseNumber: number) => void
 	onPhaseDelete?: (phaseNumber: number, instance: CardInstance | null) => void
 }
 
-export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
+interface PhaseGroupState {
+	hover: boolean
+}
+
+export class PhaseGroup extends React.Component<PhaseGroupProps, PhaseGroupState> {
+	constructor(props) {
+    super(props);
+    this.state = {
+      hover: false
+    };
+  }
 	handleClick = (phaseNumber: number) => () => {
 		if (this.props.onPhaseClick)
 			this.props.onPhaseClick(phaseNumber)
@@ -131,11 +142,21 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 		if (this.props.onPhaseDelete)
 			this.props.onPhaseDelete(phaseNumber, instance)
 	}
+	handleMouseOver = () => {
+		this.setState({
+			hover: true
+		})
+	}
+	handleMouseOut = () => {
+		this.setState({
+			hover: false
+		})
+	}
 
 	render() {
 		const allyText = this.props.ally?"ALLY":"ENEMY";
 		return (
-			<div className="phase-group">
+			<div className="phase-group" onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
 				{allyText}
 				{ this.props.phases.map((phase, index) => (
 				  <Phase
@@ -146,6 +167,8 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 					currentPhase={this.props.currentPhase}
 					onPhaseClick={this.handleClick(index+1)}
 					onPhaseDelete={this.handleDelete(index+1, phase.instance)}
+					groupHover={this.state.hover}
+					antiCheat={this.props.antiCheat}
 				   />
 				  ))}
 			</div>
@@ -168,6 +191,8 @@ interface PhaseProps {
 	ally: boolean
 	stage: GameStage
 	currentPhase: CurrentPhase | null
+	groupHover: boolean
+	antiCheat: boolean
 	onPhaseClick?: () => void
 	onPhaseDelete?: () => void
 }
@@ -185,7 +210,10 @@ export class Phase extends React.Component<PhaseProps, {}> {
 		// add is-not-ally class after ':' if needed
 		const allyClass = ally ? "is-ally" : ""
 		const filledClass = phase.action ? "is-filled" : ""
-		const showCondition = phase.show || (ally && stage === GameStage.PLAY)
+
+		// show if antiCheat is off, or when hovered
+		const showByAntiCheat = !this.props.antiCheat || this.props.groupHover
+		const showCondition = phase.show || ( ally && stage === GameStage.PLAY && showByAntiCheat )
 		const showClass = phase.show ? "is-show" : ""
 
 		if(!showCondition) {

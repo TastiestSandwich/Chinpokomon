@@ -9,21 +9,47 @@ interface PowerProps {
   instance: CardInstance
   stage: GameStage
   onClick?: () => void
+  antiCheat: boolean
 }
 
-export default class Power extends React.Component<PowerProps, {} > {
+interface PowerState {
+  hover: boolean
+}
+
+export default class Power extends React.Component<PowerProps,PowerState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hover: false
+    };
+  }
+
+  handleMouseOver = () => {
+    this.setState({
+      hover: true
+    })
+  }
+  handleMouseOut = () => {
+    this.setState({
+      hover: false
+    })
+  }
 
 	render() {
 		const { instance, stage, onClick, } = this.props
 		const type = instance.card.type
 		const pcc = "power-component"
-		const isClickedClass = instance.isClicked ? `${pcc}--is-clicked` : ""
-		const isClickableClass = !!onClick && !instance.isClicked ? `${pcc}--is-clickable` : ""
-    const show = stage === GameStage.PLAY
+
+    const showByAntiCheat = !this.props.antiCheat || this.state.hover
+    const show = stage === GameStage.PLAY && showByAntiCheat
     const hideClass = show ? "" : `${pcc}--is-hide` 
 
+    const isClickedClass = instance.isClicked && show ? `${pcc}--is-clicked` : ""
+    const isClickableClass = !!onClick && !instance.isClicked ? `${pcc}--is-clickable` : ""
+
 		return(
-			<div className={`${pcc} ${pcc}--type-${type.name} ${isClickedClass} ${isClickableClass} ${hideClass}`} onClick={onClick}>
+			<div className={`${pcc} ${pcc}--type-${type.name} ${isClickedClass} ${isClickableClass} ${hideClass}`} onClick={onClick}
+      onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
 			{
 				show &&
 				<>

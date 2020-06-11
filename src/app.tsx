@@ -37,7 +37,7 @@ interface AppState {
   enemyPowerList: {[id: number] : CardInstance}
   view: AppView
   ally: boolean
-  antiCheating: boolean
+  antiCheat: boolean
 }
 
 class App extends React.Component<{}, AppState> {
@@ -60,13 +60,13 @@ class App extends React.Component<{}, AppState> {
       allyPowerList: allyPowerList,
       enemyPowerList: enemyPowerList,
       ally: true,
-      antiCheating: false
+      antiCheat: false
     };
   }
 
-  toggleAntiCheating = () => {
+  toggleAntiCheat = () => {
     this.setState((state) => ({
-      antiCheating: !state.antiCheating
+      antiCheat: !state.antiCheat
     }))
   }
 
@@ -133,8 +133,8 @@ class App extends React.Component<{}, AppState> {
           <Start 
           changeView={this.changeView}
           swapPlayers={this.swapPlayers}
-          antiCheating={this.state.antiCheating}
-          toggleAntiCheating={this.toggleAntiCheating}
+          antiCheat={this.state.antiCheat}
+          toggleAntiCheat={this.toggleAntiCheat}
           ally={this.state.ally}
           />
         );
@@ -174,7 +174,7 @@ class App extends React.Component<{}, AppState> {
           setDeckList={this.setDeckList}
           setPowerList={this.setPowerList}
           swapPlayers={this.swapPlayers}
-          antiCheating={this.state.antiCheating}
+          antiCheat={this.state.antiCheat}
           />
         );
     }

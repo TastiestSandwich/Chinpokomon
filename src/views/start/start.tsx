@@ -4,8 +4,8 @@ import { AppView } from '../../app';
 interface StartProps {
   changeView: (view: AppView) => void
   swapPlayers: () => void
-  antiCheating: boolean
-  toggleAntiCheating: () => void
+  antiCheat: boolean
+  toggleAntiCheat: () => void
   ally: boolean
 }
 
@@ -57,7 +57,7 @@ export class Start extends React.Component<StartProps> {
            <div className="start-component__anticheat-message">
              ACTIVATE ANTICHEAT?
            </div> 
-           <input type="checkbox" checked={this.props.antiCheating} onChange={this.props.toggleAntiCheating}/>
+           <input type="checkbox" checked={this.props.antiCheat} onChange={this.props.toggleAntiCheat}/>
          </div>
       </div>
     );

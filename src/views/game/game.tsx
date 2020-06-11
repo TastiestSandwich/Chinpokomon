@@ -29,7 +29,7 @@ interface GameProps {
   setDeckList: (deckList: {[id: number] : CardInstance}, ally: boolean) => void
   setPowerList: (powerList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
-  antiCheating: boolean
+  antiCheat: boolean
 }
 
 export interface GameState {
@@ -449,7 +449,8 @@ export class Game extends React.Component<GameProps, GameState> {
         <Chinpoko chinpoko = {enemyChinpoko} ally={false} />
         <Engine />
         <Chinpoko chinpoko = {allyChinpoko} ally={true} />
-        <Power instance={allyPower} stage={stage} onClick={() => this.handleCardClick(allyPower)} />
+        <Power instance={allyPower} stage={stage} onClick={() => this.handleCardClick(allyPower)}
+        antiCheat={this.props.antiCheat} />
       </div>
     );
   }
@@ -466,10 +467,12 @@ export class Game extends React.Component<GameProps, GameState> {
         <div className="game-component__phases">
           { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} /> }
           { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} /> }
-          { <PhaseGroup phases={this.state.enemyPhases} ally={false} stage={stage} currentPhase={this.state.currentPhase} /> }
+          { <PhaseGroup phases={this.state.enemyPhases} ally={false} stage={stage} currentPhase={this.state.currentPhase} 
+            antiCheat={this.props.antiCheat} /> }
           { <PhaseGroup phases={this.state.allyPhases} ally={true} stage={stage} currentPhase={this.state.currentPhase}
             onPhaseClick={this.handlePhaseClick}
-            onPhaseDelete={this.deletePhaseClick} /> }
+            onPhaseDelete={this.deletePhaseClick}
+            antiCheat={this.props.antiCheat} /> }
           <div className="game-component__selected">
            { this.state.selectedCard &&
             <SelectedCard instance={this.state.selectedCard} deleteCardClick={this.deleteCardClick} stage={this.state.stage}/> }
@@ -477,14 +480,17 @@ export class Game extends React.Component<GameProps, GameState> {
         </div>
         <div className="game-component__board">
           <div className="game-component__enemy-zone">
-            <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand" />
+            <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand"
+            antiCheat={this.props.antiCheat}/>
           </div>
           { this.renderField() }
           <div className="game-component__ally-zone">
             <div className="game-component__ally-trainer">
-              <Power instance={trainerPower} stage={stage} onClick={() => this.handleCardClick(trainerPower)} />
+              <Power instance={trainerPower} stage={stage} onClick={() => this.handleCardClick(trainerPower)} 
+              antiCheat={this.props.antiCheat}/>
             </div>
-            <Hand instances={allyInstances} ally={true} stage={stage} onCardClick={this.handleCardClick} className="game-component__hand"/>
+            <Hand instances={allyInstances} ally={true} stage={stage} onCardClick={this.handleCardClick} className="game-component__hand"
+            antiCheat={this.props.antiCheat}/>
           </div>
         </div>
       </div>

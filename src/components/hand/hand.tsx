@@ -9,13 +9,36 @@ interface HandProps {
   stage: GameStage
 	onCardClick?: (instance: CardInstance) => void
 	className?: string
+	antiCheat: boolean
 }
 
-export class Hand extends React.Component<HandProps> {
+interface HandState {
+	hover: boolean
+}
+
+export class Hand extends React.Component<HandProps, HandState> {
+	constructor(props) {
+    super(props);
+    this.state = {
+      hover: false
+    };
+  }
+
 	handleClick = (instance: CardInstance) => () => {
 		if(this.props.onCardClick)
 			this.props.onCardClick(instance)
 	}
+	handleMouseOver = () => {
+		this.setState({
+			hover: true
+		})
+	}
+	handleMouseOut = () => {
+		this.setState({
+			hover: false
+		})
+	}
+
 	render() {
 		const {instances, ally, className} = this.props
 		// add is-not-ally class after ':' if needed
@@ -26,7 +49,8 @@ export class Hand extends React.Component<HandProps> {
 							: (a) => {return undefined}
 						: (a) => {return undefined}
 		return (
-			<div className={`hand-component hand-component--${allyClass} ${className}`} >
+			<div className={`hand-component hand-component--${allyClass} ${className}`} 
+			onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
 				{ instances.map((instance) => (
 					<Card
 						key={instance.id}
@@ -34,6 +58,8 @@ export class Hand extends React.Component<HandProps> {
 						ally={this.props.ally}
             stage={this.props.stage}
 						onClick={onClick(instance)}
+						handHover={this.state.hover}
+						antiCheat={this.props.antiCheat}
 					 />
 					))}
 			</div>
