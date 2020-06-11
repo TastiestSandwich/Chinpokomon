@@ -9,11 +9,13 @@ import { Engine, calcDamage, calcAbsorb, calcHeal } from '../../components/engin
 import { CardAction } from '../../components/action/action';
 import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
+import Modal from '../../components/modal/modal';
 
 export const enum GameStage {
   PLAY,
   RESOLUTION,
-  GAMEOVER
+  GAMEOVER,
+  CHANGE_CHINPOKO_MODAL
 }
 
 interface GameProps {
@@ -27,6 +29,7 @@ interface GameProps {
   setDeckList: (deckList: {[id: number] : CardInstance}, ally: boolean) => void
   setPowerList: (powerList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
+  antiCheating: boolean
 }
 
 export interface GameState {
@@ -45,6 +48,7 @@ export interface GameState {
   allyPhaseNumber: number
   enemyPhaseNumber: number
   stage: GameStage
+  previousStage: GameStage
   phaseCounters: Array<PhaseCounter>
   phaseLimit: number
   currentPhase: CurrentPhase | null
@@ -69,6 +73,7 @@ export class Game extends React.Component<GameProps, GameState> {
       allyPhaseNumber: Constants.startingPhases,
       enemyPhaseNumber: Constants.startingPhases,
       stage: GameStage.PLAY,
+      previousStage: GameStage.PLAY,
       phaseCounters: [],
       phaseLimit: 0,
       currentPhase: null
