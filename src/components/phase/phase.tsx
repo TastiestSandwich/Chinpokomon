@@ -3,6 +3,7 @@ import '../../old_style/phase.css';
 import { GameStage } from '../../views/game/game';
 import { CardInstance } from '../card/card';
 import { CardAction, ActionSymbol } from '../action/action';
+import { Constants } from '../../data/const';
 
 export interface CurrentPhase {
 	isAlly: boolean
@@ -216,10 +217,12 @@ export class Phase extends React.Component<PhaseProps, {}> {
 		const showCondition = phase.show || ( ally && stage === GameStage.PLAY && showByAntiCheat )
 		const showClass = phase.show ? "is-show" : ""
 
+		const extraClass = phase.index > Constants.startingPhases ? "is-extra" : ""
+
 		if(!showCondition) {
 			return (
 				<div className={`phase-container ${allyClass}`}>
-					<div className="phase">
+					<div className={`phase ${extraClass}`}>
 						{phase.index}
 					</div>
 				</div>
@@ -228,7 +231,7 @@ export class Phase extends React.Component<PhaseProps, {}> {
 		} else {
 			return (
 				<div className={`phase-container ${allyClass} ${currentClass} ${showClass}`}>
-					<div className={`phase ${filledClass}`} onClick={onPhaseClick}>
+					<div className={`phase ${filledClass} ${extraClass}`} onClick={onPhaseClick}>
 						<div className={"phase-text"}>
 							{phase.index}
 						</div>

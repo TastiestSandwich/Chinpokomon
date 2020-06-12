@@ -7,8 +7,7 @@ export const Constants = {
 
   // Phase
   startingPhases: 5,
-  maxPhases: 10,
-  minPhases: 1,
+  maxStoredPhases: 5,
 
   // Hand and Deck
   startingHandSize: 5,

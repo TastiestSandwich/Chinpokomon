@@ -32,3 +32,11 @@
 .phase.is-filled {
 	background: grey;
 }
+
+.phase.is-extra {
+	background: lightgreen;
+}
+
+.phase.is-extra.is-filled {
+	background: mediumseagreen;
+}

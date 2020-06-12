@@ -85,7 +85,9 @@ export class SelectedCard extends React.Component<SelectedCardProps> {
 			<div className = "selected-card">
 				{
 					instance &&
-					<Card instance={instance} ally={true} stage={this.props.stage}/>
+					<Card instance={instance} ally={true} stage={this.props.stage}
+					handHover={false}
+					antiCheat={false}/>
 				}
 				{
 					instance &&

@@ -45,8 +45,8 @@ export interface GameState {
   enemySelectedCard: CardInstance | null
   allyPhases: Array<PhaseData>
   enemyPhases: Array<PhaseData>
-  allyPhaseNumber: number
-  enemyPhaseNumber: number
+  allyStoredPhases: number
+  enemyStoredPhases: number
   stage: GameStage
   previousStage: GameStage
   phaseCounters: Array<PhaseCounter>
@@ -70,8 +70,8 @@ export class Game extends React.Component<GameProps, GameState> {
       enemySelectedCard: null,
       allyPhases: initPhaseGroupData(Constants.startingPhases),
       enemyPhases: initPhaseGroupData(Constants.startingPhases),
-      allyPhaseNumber: Constants.startingPhases,
-      enemyPhaseNumber: Constants.startingPhases,
+      allyStoredPhases: 0,
+      enemyStoredPhases: 0,
       stage: GameStage.PLAY,
       previousStage: GameStage.PLAY,
       phaseCounters: [],
@@ -200,8 +200,8 @@ export class Game extends React.Component<GameProps, GameState> {
       enemySelectedCard: state.selectedCard,
       allyPhases: state.enemyPhases,
       enemyPhases: state.allyPhases,
-      allyPhaseNumber: state.enemyPhaseNumber,
-      enemyPhaseNumber: state.allyPhaseNumber
+      allyStoredPhases: state.enemyStoredPhases,
+      enemyStoredPhases: state.allyStoredPhases
     }))
   }
 
@@ -310,8 +310,10 @@ export class Game extends React.Component<GameProps, GameState> {
         this.drawCards(false, 1);
         this.setState((state) => ({
           stage: GameStage.PLAY,
-          allyPhases: initPhaseGroupData(state.allyPhaseNumber),
-          enemyPhases: initPhaseGroupData(state.enemyPhaseNumber),
+          allyPhases: initPhaseGroupData(Constants.startingPhases + state.allyStoredPhases),
+          enemyPhases: initPhaseGroupData(Constants.startingPhases + state.enemyStoredPhases),
+          allyStoredPhases: 0,
+          enemyStoredPhases: 0,
           currentPhase: null,
         }))
       }
@@ -396,6 +398,23 @@ export class Game extends React.Component<GameProps, GameState> {
     }
   }
 
+  increaseStoredPhases(isAlly: boolean) {
+    const storedPhases = isAlly ? this.state.allyStoredPhases : this.state.enemyStoredPhases
+    const newStoredPhases = storedPhases + 1
+    if (newStoredPhases > Constants.maxStoredPhases) {
+      return
+    }
+    if(isAlly) {
+      this.setState({
+        allyStoredPhases: newStoredPhases
+      })
+    } else {
+      this.setState({
+        enemyStoredPhases: newStoredPhases
+      })
+    }
+  }
+
   solveNextPhase(phaseCounters: Array<PhaseCounter>, phaseLimit: number, allyChinpoko: ChinpokoData, enemyChinpoko: ChinpokoData) {
     const index: number = findHighestIndexOverLimit(phaseCounters, phaseLimit);
     if (index >= 0) {
@@ -419,6 +438,8 @@ export class Game extends React.Component<GameProps, GameState> {
           if(phase.isEnd) {
             this.discardCardIfNeeded(instance, phaseCounter.isAlly);
           }
+        } else {
+          this.increaseStoredPhases(phaseCounter.isAlly)
         }
       }
       // delete phaseCounter if no more phases, else antisum limit
