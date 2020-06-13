@@ -2,7 +2,7 @@ import React from 'react';
 import { AppView } from '../../app';
 import { ChinpokoData, ChinpokoStoredData, getChinpokoData, getRandomChinpoko } from '../../components/chinpoko/chinpoko';
 import { BaseChinpokoList } from '../../data/speciesList';
-import { TeamChinpoko } from './teamChinpoko';
+import TeamChinpoko from './teamChinpoko';
 import './teamBuilder.scss';
 
 export interface ChinpokoInputData {
@@ -131,6 +131,7 @@ export class TeamBuilder extends React.Component<TeamBuilderProps, TeamBuilderSt
           <TeamChinpoko
             key={key}
             chinpoko={team[key]}
+            id={parseInt(key)}
            />
           ))}
         </div>

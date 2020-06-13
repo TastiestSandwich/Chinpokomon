@@ -1,4 +1,5 @@
 import React from 'react';
+import './modal.scss';
 
 interface ModalProps {
   open: boolean
@@ -12,13 +13,13 @@ export default class Modal extends React.Component<ModalProps> {
     const title = this.props.title || ""
     return(
       <>
-      { open &&
+      { this.props.open &&
         <div className="modal-component">
-          <div className="modal-box">
-            <header>
+          <div className="modal-component__modal-box">
+            <div className="modal-component__modal-header">
               { title }
-            </header>
-            <div className="modal-content">
+            </div>
+            <div className="modal-component__modal-content">
               { this.props.children }
           </div>
           </div>

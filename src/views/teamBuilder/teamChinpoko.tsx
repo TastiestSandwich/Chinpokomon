@@ -6,14 +6,19 @@ import './teamChinpoko.scss';
 
 interface TeamChinpokoProps {
 	chinpoko: ChinpokoData
+	id: number
+	onClick?: () => void
 }
 
-export class TeamChinpoko extends React.Component<TeamChinpokoProps> {
+export default class TeamChinpoko extends React.Component<TeamChinpokoProps> {
 
 	renderChinpokoSprite() {
 		const species = this.props.chinpoko.storedData.species
+		const isClickableClass = this.props.onClick != undefined ? "team-chinpoko-component__sprite--clickable" : ""
+
 		return (
-			<div className={`team-chinpoko-component__sprite`}>
+			<div className={`team-chinpoko-component__sprite ${isClickableClass}`}
+			onClick={this.props.onClick}>
 				<img src={species.sprite} alt={species.speciesName} />
 			</div>
 		)

@@ -10,6 +10,7 @@ import { CardAction } from '../../components/action/action';
 import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
 import Modal from '../../components/modal/modal';
+import ChangeChinpokoTeam from '../../components/modal/changeChinpokoTeam';
 
 export const enum GameStage {
   PLAY,
@@ -52,6 +53,7 @@ export interface GameState {
   phaseCounters: Array<PhaseCounter>
   phaseLimit: number
   currentPhase: CurrentPhase | null
+  allyChangeTeam: boolean
 }
 
 export class Game extends React.Component<GameProps, GameState> {
@@ -76,7 +78,8 @@ export class Game extends React.Component<GameProps, GameState> {
       previousStage: GameStage.PLAY,
       phaseCounters: [],
       phaseLimit: 0,
-      currentPhase: null
+      currentPhase: null,
+      allyChangeTeam: true
     };
   }
 
@@ -236,7 +239,7 @@ export class Game extends React.Component<GameProps, GameState> {
     if(action.effect.name === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); }
     else if(action.effect.name === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); }
     else if(action.effect.name === "HEAL") { this.effectHeal(instance.card, action, ally); }
-    else if(action.effect.name === "CHANGE") { this.effectChange(ally, isAlly); }
+    else if(action.effect.name === "CHANGE") { this.effectChangeModal(isAlly); }
     else if(action.effect.name === "WAIT") { }
   }
 
@@ -340,6 +343,8 @@ export class Game extends React.Component<GameProps, GameState> {
 
   handleChinpokoDeath(chinpoko: ChinpokoData, ally: boolean) {
     console.log("RIP " + chinpoko.storedData.name);
+    this.effectChangeModal(ally);
+    /*
     const changeResult = this.effectChange(chinpoko, ally);
     if(!changeResult) {
       console.log("GAME OVER");
@@ -347,6 +352,7 @@ export class Game extends React.Component<GameProps, GameState> {
         stage: GameStage.GAMEOVER
       })
     }
+    */
   }
 
   effectChange(chinpoko: ChinpokoData, ally: boolean): boolean {
@@ -377,6 +383,28 @@ export class Game extends React.Component<GameProps, GameState> {
     } else {
       console.log("There are no chinpokos left!")
       return false;
+    }
+  }
+
+  effectChangeModal(ally: boolean) {
+    this.setState((state) => ({
+      stage: GameStage.CHANGE_CHINPOKO_MODAL,
+      previousStage: state.stage,
+      allyChangeTeam: ally
+    }))
+  }
+
+  handleChangeChinpokoClick = (id: number, ally: boolean) => {
+    if (ally) {
+      this.setState((state) => ({
+        stage: state.previousStage,
+        allyChinpoko: id
+      }))
+    } else {
+      this.setState((state) => ({
+        stage: state.previousStage,
+        enemyChinpoko: id
+      }))
     }
   }
 
@@ -476,6 +504,16 @@ export class Game extends React.Component<GameProps, GameState> {
     );
   }
 
+  renderModals() {
+    const open = this.state.stage === GameStage.CHANGE_CHINPOKO_MODAL
+    return (
+      <Modal open={open} title="change chinpoko">
+        <ChangeChinpokoTeam ally={true} team={this.props.allyTeam} currentChinpokoId={this.state.allyChinpoko}
+        onChinpokoClick={this.handleChangeChinpokoClick}/>
+      </Modal>
+    )
+  }
+
   render() {
     const allyInstances: Array<CardInstance> = this.state.allyHand.map(a => this.props.allyDeckList[a]);
     const enemyInstances: Array<CardInstance> = this.state.enemyHand.map(a => this.props.enemyDeckList[a]);
@@ -485,6 +523,7 @@ export class Game extends React.Component<GameProps, GameState> {
 
     return (
       <div className="game-component">
+        { this.renderModals() }
         <div className="game-component__phases">
           { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} /> }
           { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} /> }

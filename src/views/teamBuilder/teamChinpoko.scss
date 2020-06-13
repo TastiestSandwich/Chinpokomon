@@ -1,18 +1,11 @@
 .team-chinpoko-component{
   position: relative;
   display:flex;
-    &__sprite{
+    &__chinpoko{
       height: 150px;
       width: 150px;
       text-align: center;
-      margin: 20px;
-      &:after{
-        width: 200px;
-        height: 70px;
-        background-color: #3b3b3b;
-        border-radius: 100%;
-        background: radial-gradient(at center, #808080, #222);
-      }
+      margin: 0px;
     }
 
     &__hpbox{
