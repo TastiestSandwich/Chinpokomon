@@ -8,17 +8,16 @@ interface TeamChinpokoProps {
 	chinpoko: ChinpokoData
 	id: number
 	onClick?: () => void
+	currentId?: number
 }
 
 export default class TeamChinpoko extends React.Component<TeamChinpokoProps> {
 
 	renderChinpokoSprite() {
 		const species = this.props.chinpoko.storedData.species
-		const isClickableClass = this.props.onClick != undefined ? "team-chinpoko-component__sprite--clickable" : ""
 
 		return (
-			<div className={`team-chinpoko-component__sprite ${isClickableClass}`}
-			onClick={this.props.onClick}>
+			<div className={`team-chinpoko-component__sprite`}>
 				<img src={species.sprite} alt={species.speciesName} />
 			</div>
 		)
@@ -106,8 +105,20 @@ export default class TeamChinpoko extends React.Component<TeamChinpokoProps> {
 	}
 
 	render() {
+		const isCurrent = this.props.id === this.props.currentId
+		const isDead = this.props.chinpoko.hp <= 0
+		const isClickable = this.props.onClick != undefined && !isDead && !isCurrent
+
+		const baseClass = "team-chinpoko-component"
+		const isClickableClass = isClickable ? `${baseClass}--clickable` : ""
+		const isDeadClass = isDead ? `${baseClass}--dead` : ""
+		const isCurrentClass = isCurrent ? `${baseClass}--current` : ""
+
+		const onClick = isClickable ? this.props.onClick : () => {}
+
 		return (
-			<div className={`team-chinpoko-component`}>
+			<div className={`team-chinpoko-component ${isClickableClass} ${isDeadClass} ${isCurrentClass}`}
+			onClick={onClick}>
 				{this.renderChinpokoDataBox()}
 				{this.renderChinpokoSprite()}
 			</div>

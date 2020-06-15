@@ -27,6 +27,7 @@ export default class ChangeChinpokoTeam extends React.Component<ChangeChinpokoTe
             key={key}
             chinpoko={team[key]}
             id={parseInt(key)}
+            currentId={this.props.currentChinpokoId}
             onClick={this.handleClick(parseInt(key))}
            />
           ))}

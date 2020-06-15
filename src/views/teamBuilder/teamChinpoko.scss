@@ -1,30 +1,40 @@
 .team-chinpoko-component{
   position: relative;
   display:flex;
+    &--clickable{
+      cursor: pointer;
+      transition: transform 300ms, filter 300ms, box-shadow 300ms;
+      &:hover{
+        transform: scale(1.5) translateY(-30%);
+        z-index:2;
+      }
+    }
+    &--dead{
+      background: darkred;
+    }
+    &--current{
+      background: lightgrey;
+    }
     &__chinpoko{
       height: 150px;
       width: 150px;
       text-align: center;
-      margin: 0px;
     }
 
     &__hpbox{
       width: 130px;
       background: #fff;
       border: 3px solid #888;
-      margin:0 2em;
     }
     &__statbox{
       width: 130px;
       background: #fff;
       border: 3px solid #888;
-      margin:0 2em;
     }
     &__biomebox{
       width: 130px;
       background: #fff;
       border: 3px solid #888;
-      margin:0 2em;
     }
 
     .hpbox{

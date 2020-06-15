@@ -506,9 +506,11 @@ export class Game extends React.Component<GameProps, GameState> {
 
   renderModals() {
     const open = this.state.stage === GameStage.CHANGE_CHINPOKO_MODAL
+    const team = this.state.allyChangeTeam ? this.props.allyTeam : this.props.enemyTeam
+    const currentId = this.state.allyChangeTeam ? this.state.allyChinpoko : this.state.enemyChinpoko
     return (
       <Modal open={open} title="change chinpoko">
-        <ChangeChinpokoTeam ally={true} team={this.props.allyTeam} currentChinpokoId={this.state.allyChinpoko}
+        <ChangeChinpokoTeam ally={this.state.allyChangeTeam} team={team} currentChinpokoId={currentId}
         onChinpokoClick={this.handleChangeChinpokoClick}/>
       </Modal>
     )
