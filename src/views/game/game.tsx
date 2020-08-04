@@ -339,22 +339,36 @@ export class Game extends React.Component<GameProps, GameState> {
     if(enemyChinpoko.hp <= 0) {
       this.handleChinpokoDeath(enemyChinpoko, false)
     }
+    if(this.getNumberOfAliveChinpokos(this.props.allyTeam) <= 0) {
+      console.log("GAME OVER, ENEMY WINS");
+      this.setState({
+        stage: GameStage.GAMEOVER
+      })
+    }
+    if(this.getNumberOfAliveChinpokos(this.props.enemyTeam) <= 0) {
+      console.log("GAME OVER, ALLY WINS");
+      this.setState({
+        stage: GameStage.GAMEOVER
+      })
+    }
   }
 
   handleChinpokoDeath(chinpoko: ChinpokoData, ally: boolean) {
     console.log("RIP " + chinpoko.storedData.name);
     this.effectChangeModal(ally);
-    /*
-    const changeResult = this.effectChange(chinpoko, ally);
-    if(!changeResult) {
-      console.log("GAME OVER");
-      this.setState({
-        stage: GameStage.GAMEOVER
-      })
-    }
-    */
   }
 
+  getNumberOfAliveChinpokos(team: {[id: number] : ChinpokoData}) : number {
+    let aliveChinpokos : number = 0
+    for(let index of Object.keys(team)) {
+      if (team[Number(index)].hp > 0) {
+        aliveChinpokos = aliveChinpokos + 1
+      }
+    }
+    return aliveChinpokos
+  }
+
+  // DEPRECATED
   effectChange(chinpoko: ChinpokoData, ally: boolean): boolean {
     console.log("COME BACK " + chinpoko.storedData.name + "!");
     let team = ally ? this.props.allyTeam : this.props.enemyTeam;
