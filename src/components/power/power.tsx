@@ -41,11 +41,11 @@ export default class Power extends React.Component<PowerProps,PowerState> {
 		const pcc = "power-component"
 
     const showByAntiCheat = !this.props.antiCheat || this.state.hover
-    const show = stage === GameStage.PLAY && showByAntiCheat
+    const show = showByAntiCheat
     const hideClass = show ? "" : `${pcc}--is-hide` 
 
     const isClickedClass = instance.isClicked && show ? `${pcc}--is-clicked` : ""
-    const isClickableClass = !!onClick && !instance.isClicked ? `${pcc}--is-clickable` : ""
+    const isClickableClass = stage == GameStage.PLAY && !!onClick && !instance.isClicked ? `${pcc}--is-clickable` : ""
 
 		return(
 			<div className={`${pcc} ${pcc}--type-${type.name} ${isClickedClass} ${isClickableClass} ${hideClass}`} onClick={onClick}
