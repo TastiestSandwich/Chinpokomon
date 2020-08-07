@@ -1,5 +1,7 @@
 import React from 'react';
 import { AppView } from '../../app';
+import './start.scss';
+import '../../root.scss';
 
 interface StartProps {
   changeView: (view: AppView) => void
@@ -7,6 +9,8 @@ interface StartProps {
   antiCheat: boolean
   toggleAntiCheat: () => void
   ally: boolean
+  cyborg: boolean
+  toggleCyborg: () => void
 }
 
 const allyName = "COFFEE BOI"
@@ -58,6 +62,10 @@ export class Start extends React.Component<StartProps> {
              ACTIVATE ANTICHEAT?
            </div> 
            <input type="checkbox" checked={this.props.antiCheat} onChange={this.props.toggleAntiCheat}/>
+           <div className="start-component__anticheat-message">
+             ACTIVATE CYBORG ASLO?
+           </div> 
+           <input type="checkbox" checked={this.props.cyborg} onChange={this.props.toggleCyborg}/>
          </div>
       </div>
     );

@@ -1,0 +1,12 @@
+.cyborg-component {
+  position:absolute;
+  margin-top: 1em;
+  &--is-clickable{
+    cursor: pointer;
+    transition: transform 300ms, filter 300ms;
+    &:hover{
+      transform: scale(1.2) translateY(-20%);
+      z-index:2;
+    }
+  }
+}

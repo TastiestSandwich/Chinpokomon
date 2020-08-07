@@ -38,6 +38,7 @@ interface AppState {
   view: AppView
   ally: boolean
   antiCheat: boolean
+  cyborg: boolean
 }
 
 class App extends React.Component<{}, AppState> {
@@ -60,13 +61,20 @@ class App extends React.Component<{}, AppState> {
       allyPowerList: allyPowerList,
       enemyPowerList: enemyPowerList,
       ally: true,
-      antiCheat: false
+      antiCheat: false,
+      cyborg: false
     };
   }
 
   toggleAntiCheat = () => {
     this.setState((state) => ({
       antiCheat: !state.antiCheat
+    }))
+  }
+
+  toggleCyborg = () => {
+    this.setState((state) => ({
+      cyborg: !state.cyborg
     }))
   }
 
@@ -136,6 +144,8 @@ class App extends React.Component<{}, AppState> {
           antiCheat={this.state.antiCheat}
           toggleAntiCheat={this.toggleAntiCheat}
           ally={this.state.ally}
+          cyborg={this.state.cyborg}
+          toggleCyborg={this.toggleCyborg}
           />
         );
 
@@ -175,6 +185,7 @@ class App extends React.Component<{}, AppState> {
           setPowerList={this.setPowerList}
           swapPlayers={this.swapPlayers}
           antiCheat={this.state.antiCheat}
+          cyborg={this.state.cyborg}
           />
         );
     }

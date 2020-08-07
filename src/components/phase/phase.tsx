@@ -16,7 +16,7 @@ export interface PhaseCounter {
   remainingPhases: Array<PhaseData>
 }
 
-export function findHighestIndexOverLimit(phaseCounters: Array<PhaseCounter>, limit: number) {
+export function findHighestIndexOverLimit(phaseCounters: Array<PhaseCounter>, limit: number): number {
 	let index: number = -1;
 	let max: number = -1;
 
@@ -39,7 +39,7 @@ export function findHighestIndexOverLimit(phaseCounters: Array<PhaseCounter>, li
 	return index;
 }
 
-export function initPhaseGroupData(size: number) {
+export function initPhaseGroupData(size: number): Array<PhaseData> {
 	let phaseGroup: Array<PhaseData> = new Array<PhaseData>();
 	for (let i = 0; i < size; i++) {
 		phaseGroup.push(initPhaseData(i+1));
@@ -47,7 +47,7 @@ export function initPhaseGroupData(size: number) {
 	return phaseGroup;
 }
 
-export function initPhaseData(index: number) {
+export function initPhaseData(index: number): PhaseData {
 	let phaseData: PhaseData = {
 		index: index,
 		show: false,
@@ -59,7 +59,7 @@ export function initPhaseData(index: number) {
 	return phaseData;
 }
 
-export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance | null, phases: Array<PhaseData>) {
+export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance | null, phases: Array<PhaseData>): boolean {
 	if (instance === null){
 		console.log("no card selected");
 		return false;
@@ -75,7 +75,7 @@ export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance
 	return true;
 }
 
-export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | null, phases: Array<PhaseData>) {
+export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | null, phases: Array<PhaseData>): Array<PhaseData> {
 	let newPhases: Array<PhaseData> = phases.slice();
 	if (instance === null) {
 		return newPhases;
@@ -96,7 +96,7 @@ export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | 
 	return newPhases;
 }
 
-export function deleteFromPhaseGroupData(instance: CardInstance, phases: Array<PhaseData>) {
+export function deleteFromPhaseGroupData(instance: CardInstance, phases: Array<PhaseData>): Array<PhaseData> {
 	let newPhases: Array<PhaseData> = phases.slice();
 	for (let i = 0; i < newPhases.length; i++) {
 		const localInstance = newPhases[i].instance;

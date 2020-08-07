@@ -11,6 +11,7 @@ import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
 import Modal from '../../components/modal/modal';
 import ChangeChinpokoTeam from '../../components/modal/changeChinpokoTeam';
+import { Cyborg, getCyborgPhases } from '../../components/cyborg/cyborg';
 
 export const enum GameStage {
   PLAY,
@@ -31,6 +32,7 @@ interface GameProps {
   setPowerList: (powerList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
   antiCheat: boolean
+  cyborg: boolean
 }
 
 export interface GameState {
@@ -54,6 +56,7 @@ export interface GameState {
   phaseLimit: number
   currentPhase: CurrentPhase | null
   allyChangeTeam: boolean
+  cyborgClicked: boolean
 }
 
 export class Game extends React.Component<GameProps, GameState> {
@@ -79,7 +82,8 @@ export class Game extends React.Component<GameProps, GameState> {
       phaseCounters: [],
       phaseLimit: 0,
       currentPhase: null,
-      allyChangeTeam: true
+      allyChangeTeam: true,
+      cyborgClicked: false
     };
   }
 
@@ -281,9 +285,12 @@ export class Game extends React.Component<GameProps, GameState> {
     if (this.state.stage === GameStage.PLAY) {
       const allyChinpoko: ChinpokoData = {...this.props.allyTeam[this.state.allyChinpoko]};
       const enemyChinpoko: ChinpokoData = {...this.props.enemyTeam[this.state.enemyChinpoko]};
+      const allyPhases: Array<PhaseData> = [...this.state.allyPhases];
+      const enemyPhases: Array<PhaseData> = [...this.state.enemyPhases];
+
       const phaseCounters: Array<PhaseCounter> = [
-      {value: allyChinpoko.spe, isAlly: true, remainingPhases: [...this.state.allyPhases]},
-      {value: enemyChinpoko.spe, isAlly: false, remainingPhases: [...this.state.enemyPhases]}];
+      {value: allyChinpoko.spe, isAlly: true, remainingPhases: allyPhases},
+      {value: enemyChinpoko.spe, isAlly: false, remainingPhases: enemyPhases}];
       const phaseLimit: number = Math.max(...phaseCounters.map( pc => pc.value ));
 
       this.setState({
@@ -318,6 +325,7 @@ export class Game extends React.Component<GameProps, GameState> {
           allyStoredPhases: 0,
           enemyStoredPhases: 0,
           currentPhase: null,
+          cyborgClicked: false
         }))
       }
     }
@@ -368,9 +376,7 @@ export class Game extends React.Component<GameProps, GameState> {
     return aliveChinpokos
   }
 
-  // DEPRECATED
-  effectChange(chinpoko: ChinpokoData, ally: boolean): boolean {
-    console.log("COME BACK " + chinpoko.storedData.name + "!");
+  randomChange(ally: boolean): boolean {
     let team = ally ? this.props.allyTeam : this.props.enemyTeam;
     let chinpokoIndex = ally ? this.state.allyChinpoko : this.state.enemyChinpoko;
     let aliveChinpokos: Array<number> = [];
@@ -401,11 +407,15 @@ export class Game extends React.Component<GameProps, GameState> {
   }
 
   effectChangeModal(ally: boolean) {
-    this.setState((state) => ({
-      stage: GameStage.CHANGE_CHINPOKO_MODAL,
-      previousStage: state.stage,
-      allyChangeTeam: ally
-    }))
+    if (this.props.cyborg && !ally) {
+      this.randomChange(false)
+    } else {
+      this.setState((state) => ({
+        stage: GameStage.CHANGE_CHINPOKO_MODAL,
+        previousStage: state.stage,
+        allyChangeTeam: ally
+      }))
+    }
   }
 
   handleChangeChinpokoClick = (id: number, ally: boolean) => {
@@ -418,6 +428,21 @@ export class Game extends React.Component<GameProps, GameState> {
       this.setState((state) => ({
         stage: state.previousStage,
         enemyChinpoko: id
+      }))
+    }
+  }
+
+  handleCyborgClick = () => {
+    if (this.props.cyborg && !this.state.cyborgClicked) { 
+      const allyChinpoko: ChinpokoData = {...this.props.allyTeam[this.state.allyChinpoko]};
+      const enemyChinpoko: ChinpokoData = {...this.props.enemyTeam[this.state.enemyChinpoko]};
+      const cyborgHand : Array<CardInstance> = this.state.enemyHand.map(a => this.props.enemyDeckList[a]);
+      const chinpokoPower: CardInstance = enemyChinpoko.powerId ? this.props.enemyPowerList[enemyChinpoko.powerId] : this.props.enemyPowerList[0];
+      const cyborgPower: CardInstance = this.props.enemyPowerList[0];
+
+      this.setState((state) => ({
+        enemyPhases: getCyborgPhases(state.enemyPhases, enemyChinpoko, allyChinpoko, cyborgHand, chinpokoPower, cyborgPower),
+        cyborgClicked: true
       }))
     }
   }
@@ -530,19 +555,30 @@ export class Game extends React.Component<GameProps, GameState> {
     )
   }
 
+  renderCyborg() {
+    const show = this.props.cyborg
+    if (show) {
+      return ( 
+        <Cyborg onClick={this.handleCyborgClick} clicked={this.state.cyborgClicked}/>
+      )
+    }
+    return
+  }
+
   render() {
     const allyInstances: Array<CardInstance> = this.state.allyHand.map(a => this.props.allyDeckList[a]);
     const enemyInstances: Array<CardInstance> = this.state.enemyHand.map(a => this.props.enemyDeckList[a]);
     const trainerPower: CardInstance = this.props.allyPowerList[0];
 
     const stage: GameStage = this.state.stage;
+    const cyborgClick: (() => void) | null = this.props.cyborg && !this.state.cyborgClicked ? this.handleCyborgClick : null
 
     return (
       <div className="game-component">
         { this.renderModals() }
         <div className="game-component__phases">
-          { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} /> }
-          { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} /> }
+          { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} cyborg={this.props.cyborg}/> }
+          { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} cyborgClick={cyborgClick}/> }
           { <PhaseGroup phases={this.state.enemyPhases} ally={false} stage={stage} currentPhase={this.state.currentPhase} 
             antiCheat={this.props.antiCheat} /> }
           { <PhaseGroup phases={this.state.allyPhases} ally={true} stage={stage} currentPhase={this.state.currentPhase}
@@ -556,6 +592,7 @@ export class Game extends React.Component<GameProps, GameState> {
         </div>
         <div className="game-component__board">
           <div className="game-component__enemy-zone">
+            { this.renderCyborg() }
             <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand"
             antiCheat={this.props.antiCheat}/>
           </div>
@@ -576,15 +613,22 @@ export class Game extends React.Component<GameProps, GameState> {
 
 interface NextTurnProps {
   stage: GameStage
-  nextTurnClick?: () => void
+  nextTurnClick: () => void
+  cyborgClick: (() => void) | null
 }
 
 class NextTurn extends React.Component<NextTurnProps> {
   render() {
-    const text:string = this.props.stage === GameStage.RESOLUTION ? "NEXT PHASE" : "NEXT TURN";
+    let text: string = this.props.stage === GameStage.RESOLUTION ? "NEXT PHASE" : "NEXT TURN"
+    let onClick: () => void = this.props.nextTurnClick
+    // activate cyborg aslo if needed
+    if (this.props.cyborgClick != null) {
+      text = "ACTIVATE CYBORG ASLO"
+      onClick = this.props.cyborgClick
+    }
     return (
       <div className="next-turn">
-        <button className = "next-turn-button" onClick={this.props.nextTurnClick}>
+        <button className = "next-turn-button" onClick={onClick}>
           {text}
         </button>
       </div>
@@ -595,11 +639,12 @@ class NextTurn extends React.Component<NextTurnProps> {
 interface ChangeTeamProps {
   stage: GameStage
   changeTeamClick?: () => void
+  cyborg: boolean
 }
 
 class ChangeTeam extends React.Component<ChangeTeamProps> {
   render() {
-    const show = this.props.stage === GameStage.PLAY;
+    const show = this.props.stage === GameStage.PLAY && !this.props.cyborg;
     return (
       <div>
       {
