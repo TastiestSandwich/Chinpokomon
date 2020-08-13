@@ -4,6 +4,7 @@ import { TypeSymbol, Type } from '../type/type';
 import { Biome } from '../type/biome';
 import { ChinpokoList } from '../../data/chinpokoList';
 import { CardData } from '../card/card';
+import { roundTo, getNumberColorClass } from '../../util';
 
 export interface ChinpokoStoredData {
 	name: string
@@ -34,6 +35,10 @@ export interface ChinpokoData {
 	def: number
 	spe: number
 	powerId: number | null
+	hpBoost: number
+	atkBoost: number
+	defBoost: number
+	speBoost: number
 }
 
 export function getRandomChinpoko(): ChinpokoData {
@@ -50,9 +55,25 @@ export function getChinpokoData(storedData: ChinpokoStoredData): ChinpokoData {
 		atk: calcStat(storedData.species.baseATK, storedData.evATK, storedData.lvl),
 		def: calcStat(storedData.species.baseDEF, storedData.evDEF, storedData.lvl),
 		spe: calcStat(storedData.species.baseSPE, storedData.evSPE, storedData.lvl),
-		powerId: null
+		powerId: null,
+		hpBoost: 1,
+		atkBoost: 1,
+		defBoost: 1.2,
+		speBoost: 0.9
 	}
 	return chinpoko;
+}
+
+export function getChinpokoAtk(chinpoko: ChinpokoData): number {
+	return Math.floor(chinpoko.atk * chinpoko.atkBoost)
+}
+
+export function getChinpokoDef(chinpoko: ChinpokoData): number {
+	return Math.floor(chinpoko.def * chinpoko.defBoost)
+}
+
+export function getChinpokoSpe(chinpoko: ChinpokoData): number {
+	return Math.floor(chinpoko.spe * chinpoko.speBoost)
 }
 
 function calcStat(baseStat: number, evStat: number, lvl: number): number {
@@ -61,6 +82,12 @@ function calcStat(baseStat: number, evStat: number, lvl: number): number {
 
 function calcHP(baseHP: number, evHP: number, lvl: number): number {
 	return Math.floor(((2 * baseHP + evHP) * lvl / 100) + lvl + 10)
+}
+
+function getDisplayBoost(boost: number): string {
+	const num = roundTo((boost - 1) * 100, 2)
+	const sign = num >= 0 ? "+" : ""
+	return sign + num + "%"
 }
 
 interface ChinpokoProps {
@@ -121,8 +148,24 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 		const {chinpoko} = this.props
 		const storedData = chinpoko.storedData
 		const biome = storedData.species.biome
+
 		const healthStyle = { width: (chinpoko.hp * 96 / chinpoko.maxhp) + "%" }
 		const cpc = "chinpoko-component"
+
+		const atk = getChinpokoAtk(chinpoko)
+		const atkColor = getNumberColorClass(chinpoko.atk, atk, cpc)
+		const def = getChinpokoDef(chinpoko)
+		const defColor = getNumberColorClass(chinpoko.def, def, cpc)
+		const spe = getChinpokoSpe(chinpoko)
+		const speColor = getNumberColorClass(chinpoko.spe, spe, cpc)
+
+		const atkBoost = getDisplayBoost(chinpoko.atkBoost)
+		const atkBoostColor = getNumberColorClass(1, chinpoko.atkBoost, cpc)
+		const defBoost = getDisplayBoost(chinpoko.defBoost)
+		const defBoostColor = getNumberColorClass(1, chinpoko.defBoost, cpc)
+		const speBoost = getDisplayBoost(chinpoko.speBoost)
+		const speBoostColor = getNumberColorClass(1, chinpoko.speBoost, cpc)
+
 		return (
 			<div className={`${cpc}__databox`}>
 				<div className={`${cpc}__hpbox hpbox`}>
@@ -151,9 +194,14 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 						</thead>
 						<tbody>
 							<tr>
-								<td>{chinpoko.atk}</td>
-								<td>{chinpoko.def}</td>
-								<td>{chinpoko.spe}</td>
+								<td className={atkColor}>{atk}</td>
+								<td className={defColor}>{def}</td>
+								<td className={speColor}>{spe}</td>
+							</tr>
+							<tr>
+								<td className={atkBoostColor}>{atkBoost}</td>
+								<td className={defBoostColor}>{defBoost}</td>
+								<td className={speBoostColor}>{speBoost}</td>
 							</tr>
 						</tbody>
 					</table>

@@ -12,6 +12,7 @@ import { Constants } from '../../data/const';
 import Modal from '../../components/modal/modal';
 import ChangeChinpokoTeam from '../../components/modal/changeChinpokoTeam';
 import { Cyborg, getCyborgPhases } from '../../components/cyborg/cyborg';
+import { Info } from '../../components/info/info';
 
 export const enum GameStage {
   PLAY,
@@ -565,6 +566,16 @@ export class Game extends React.Component<GameProps, GameState> {
     return
   }
 
+  renderInfo(ally: boolean) {
+    const totalChinpokos = ally ? Object.keys(this.props.allyTeam).length :  Object.keys(this.props.enemyTeam).length
+    const aliveChinpokos = ally ? this.getNumberOfAliveChinpokos(this.props.allyTeam) : this.getNumberOfAliveChinpokos(this.props.enemyTeam)
+    const totalDeck = ally ? this.state.allyDeck.length : this.state.enemyDeck.length
+    const totalDiscard = ally ? this.state.allyDiscard.length : this.state.enemyDiscard.length
+    return (
+      <Info totalChinpokos={totalChinpokos} aliveChinpokos={aliveChinpokos} totalDeck={totalDeck} totalDiscard={totalDiscard} />
+    )
+  }
+
   render() {
     const allyInstances: Array<CardInstance> = this.state.allyHand.map(a => this.props.allyDeckList[a]);
     const enemyInstances: Array<CardInstance> = this.state.enemyHand.map(a => this.props.enemyDeckList[a]);
@@ -595,6 +606,7 @@ export class Game extends React.Component<GameProps, GameState> {
             { this.renderCyborg() }
             <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand"
             antiCheat={this.props.antiCheat}/>
+            { this.renderInfo(false) }
           </div>
           { this.renderField() }
           <div className="game-component__ally-zone">
@@ -604,6 +616,7 @@ export class Game extends React.Component<GameProps, GameState> {
             </div>
             <Hand instances={allyInstances} ally={true} stage={stage} onCardClick={this.handleCardClick} className="game-component__hand"
             antiCheat={this.props.antiCheat}/>
+            { this.renderInfo(true) }
           </div>
         </div>
       </div>

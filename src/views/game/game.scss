@@ -8,6 +8,7 @@
   font-size: $baseFontSize;
   &__board{
     flex:1;
+    flex-direction:column;
     position:relative;
     display: flex;
     width:100%;
