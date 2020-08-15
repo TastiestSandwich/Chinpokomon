@@ -1,11 +1,11 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import { CardData, CardInstance, shuffle, CardSource } from '../../components/card/card';
+import { CardInstance, shuffle, CardSource } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
-import { Chinpoko, ChinpokoData } from '../../components/chinpoko/chinpoko';
+import { Chinpoko, ChinpokoData, getChinpokoSpe } from '../../components/chinpoko/chinpoko';
 import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
-import { Engine, calcDamage, calcAbsorb, calcHeal } from '../../components/engine/engine';
+import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop } from '../../components/engine/engine';
 import { CardAction } from '../../components/action/action';
 import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
@@ -241,45 +241,13 @@ export class Game extends React.Component<GameProps, GameState> {
    }
 
   handleCardAction(instance: CardInstance, action: CardAction, isAlly: boolean, ally: ChinpokoData, enemy: ChinpokoData) {
-    if(action.effect.name === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); }
-    else if(action.effect.name === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); }
-    else if(action.effect.name === "HEAL") { this.effectHeal(instance.card, action, ally); }
+    if(action.effect.name === "DAMAGE") { effectDamage(instance.card, action, ally, enemy); }
+    else if(action.effect.name === "ABSORB") { effectAbsorb(instance.card, action, ally, enemy); }
+    else if(action.effect.name === "HEAL") { effectHeal(instance.card, action, ally); }
     else if(action.effect.name === "CHANGE") { this.effectChangeModal(isAlly); }
+    else if(action.effect.name === "BOOST") { effectBoost(instance.card, action, ally) }
+    else if(action.effect.name === "DROP") { effectDrop(instance.card, action, ally, enemy) }
     else if(action.effect.name === "WAIT") { }
-  }
-
-  effectDamage(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
-    let damage = calcDamage(action.parameters.power, card.type, ally, enemy);
-    if (enemy.hp < damage) {
-      damage = enemy.hp;
-    }
-    enemy.hp = enemy.hp - damage;
-    console.log("Does " + damage + " points of damage!");
-  }
-
-  effectAbsorb(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
-    let damage = calcDamage(action.parameters.power, card.type, ally, enemy);
-    if (enemy.hp < damage) {
-      damage = enemy.hp;
-    }
-    enemy.hp = enemy.hp - damage;
-    console.log("Does " + damage + " points of damage!");
-
-    let absorb = calcAbsorb(action.parameters.percentage, card.type, ally, damage);
-    if (ally.hp + absorb > ally.maxhp) {
-      absorb = ally.maxhp - ally.hp;
-    }
-    ally.hp = ally.hp + absorb;
-    console.log("Absorbs " + absorb + " points of damage!");
-  }
-
-  effectHeal(card:CardData, action: CardAction, ally: ChinpokoData) {
-    let heal = calcHeal(action.parameters.percentage, card.type, ally);
-    if (ally.hp + heal > ally.maxhp) {
-      heal = ally.maxhp - ally.hp;
-    }
-    ally.hp = ally.hp + heal;
-    console.log("Heals " + heal + " points of damage!");
   }
 
   handleNextTurnClick = () => {
@@ -290,8 +258,8 @@ export class Game extends React.Component<GameProps, GameState> {
       const enemyPhases: Array<PhaseData> = [...this.state.enemyPhases];
 
       const phaseCounters: Array<PhaseCounter> = [
-      {value: allyChinpoko.spe, isAlly: true, remainingPhases: allyPhases},
-      {value: enemyChinpoko.spe, isAlly: false, remainingPhases: enemyPhases}];
+      {value: getChinpokoSpe(allyChinpoko), isAlly: true, remainingPhases: allyPhases},
+      {value: getChinpokoSpe(enemyChinpoko), isAlly: false, remainingPhases: enemyPhases}];
       const phaseLimit: number = Math.max(...phaseCounters.map( pc => pc.value ));
 
       this.setState({

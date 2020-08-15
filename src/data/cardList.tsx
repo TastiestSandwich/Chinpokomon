@@ -234,5 +234,122 @@ export const CardList: { [name:string] : CardData } = {
 				power: 70
 			}
 		}]
-	}
+	},
+	"Hot Blooded": {
+		name: "Hot Blooded",
+		text: "Pumps adrenaline to raise Attack",
+		type: TypeList["FIRE"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				percentage: 0.7,
+				stat: "ATK"
+			}
+		}]
+	},
+	"Stone Skin": {
+		name: "Stone Skin",
+		text: "Surrounds itself in sand and stone to raise Defense",
+		type: TypeList["EARTH"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				percentage: 0.7,
+				stat: "DEF"
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Tailwind": {
+		name: "Tailwind",
+		text: "Strong winds propel the user, raising Speed",
+		type: TypeList["WIND"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				percentage: 0.7,
+				stat: "SPE"
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Street Smarts": {
+		name: "Street Smarts",
+		text: "The wounds from survival intimidate the enemy, dropping its Attack",
+		type: TypeList["ARTIFICIAL"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DROP"],
+			parameters: {
+				percentage: 0.7,
+				stat: "ATK"
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Frostbite": {
+		name: "Frostbite",
+		text: "Sub-zero temperatures make the enemy shiver, dropping its Defense",
+		type: TypeList["COLD"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DROP"],
+			parameters: {
+				percentage: 0.7,
+				stat: "DEF"
+			}
+		}]
+	},
+	"Thunderwave": {
+		name: "Thunderwave",
+		text: "An electric shock immobilizes the enemy, dropping its Speed",
+		type: TypeList["ELECTRIC"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DROP"],
+			parameters: {
+				percentage: 0.7,
+				stat: "SPE"
+			}
+		}]
+	},
 }

@@ -1,9 +1,9 @@
 
 export const Constants = {
     // Stat Boosts
-  maxStatBoost: 5,
-  minStatBoost: -5,
-  statBoost: 0.5,
+  maxStatBoost: 4,
+  minStatBoost: 0.25,
+  baseStatBoost: 1,
 
   // Phase
   startingPhases: 5,

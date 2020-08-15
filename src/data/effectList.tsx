@@ -20,5 +20,13 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"CHANGE": {
 		name: "CHANGE",
 		symbol: "fas fa-exchange-alt"
+	},
+	"BOOST": {
+		name: "BOOST",
+		symbol: "fas fa-arrow-up"
+	},
+	"DROP": {
+		name: "DROP",
+		symbol: "fas fa-arrow-down"
 	}
 };

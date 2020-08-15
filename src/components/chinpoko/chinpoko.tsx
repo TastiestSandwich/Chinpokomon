@@ -5,6 +5,7 @@ import { Biome } from '../type/biome';
 import { ChinpokoList } from '../../data/chinpokoList';
 import { CardData } from '../card/card';
 import { roundTo, getNumberColorClass } from '../../util';
+import { Constants } from '../../data/const';
 
 export interface ChinpokoStoredData {
 	name: string
@@ -56,10 +57,10 @@ export function getChinpokoData(storedData: ChinpokoStoredData): ChinpokoData {
 		def: calcStat(storedData.species.baseDEF, storedData.evDEF, storedData.lvl),
 		spe: calcStat(storedData.species.baseSPE, storedData.evSPE, storedData.lvl),
 		powerId: null,
-		hpBoost: 1,
-		atkBoost: 1,
-		defBoost: 1.2,
-		speBoost: 0.9
+		hpBoost: Constants.baseStatBoost,
+		atkBoost: Constants.baseStatBoost,
+		defBoost: Constants.baseStatBoost,
+		speBoost: Constants.baseStatBoost
 	}
 	return chinpoko;
 }

@@ -14,6 +14,7 @@ export interface ActionEffect {
 export interface ActionParameters {
   power?: number
   percentage?: number
+  stat?: string
 }
 
 interface ActionSymbolProps {
