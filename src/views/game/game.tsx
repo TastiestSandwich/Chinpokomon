@@ -5,7 +5,7 @@ import { CardInstance, shuffle, CardSource } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData, getChinpokoSpe } from '../../components/chinpoko/chinpoko';
 import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
-import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop } from '../../components/engine/engine';
+import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop, effectRegen, effectDegen, applyHpBoost } from '../../components/engine/engine';
 import { CardAction } from '../../components/action/action';
 import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
@@ -247,6 +247,8 @@ export class Game extends React.Component<GameProps, GameState> {
     else if(action.effect.name === "CHANGE") { this.effectChangeModal(isAlly); }
     else if(action.effect.name === "BOOST") { effectBoost(instance.card, action, ally) }
     else if(action.effect.name === "DROP") { effectDrop(instance.card, action, ally, enemy) }
+    else if(action.effect.name === "REGEN") { effectRegen(instance.card, action, ally) }
+    else if(action.effect.name === "DEGEN") { effectDegen(instance.card, action, ally, enemy) }
     else if(action.effect.name === "WAIT") { }
   }
 
@@ -268,23 +270,26 @@ export class Game extends React.Component<GameProps, GameState> {
       })
       this.solveNextPhase(phaseCounters, phaseLimit, allyChinpoko, enemyChinpoko);
       this.updateTeams(allyChinpoko, enemyChinpoko);
-      this.stateBasedActions(phaseCounters, allyChinpoko, enemyChinpoko);
+      this.stateBasedActions(allyChinpoko, enemyChinpoko);
       this.setState({
         phaseCounters: phaseCounters
       });
 
     } else if (this.state.stage === GameStage.RESOLUTION) {
       const phaseCounters: Array<PhaseCounter> = [...this.state.phaseCounters];
+      const allyChinpoko: ChinpokoData = {...this.props.allyTeam[this.state.allyChinpoko]};
+      const enemyChinpoko: ChinpokoData = {...this.props.enemyTeam[this.state.enemyChinpoko]};
       if(phaseCounters.length > 0) {
-        const allyChinpoko: ChinpokoData = {...this.props.allyTeam[this.state.allyChinpoko]};
-        const enemyChinpoko: ChinpokoData = {...this.props.enemyTeam[this.state.enemyChinpoko]};
         this.solveNextPhase(phaseCounters, this.state.phaseLimit, allyChinpoko, enemyChinpoko);
         this.updateTeams(allyChinpoko, enemyChinpoko);
-        this.stateBasedActions(phaseCounters, allyChinpoko, enemyChinpoko);
+        this.stateBasedActions(allyChinpoko, enemyChinpoko);
         this.setState({
           phaseCounters: phaseCounters,
         });
       } else {
+        this.doEndOfTurnEffects(allyChinpoko, enemyChinpoko);
+        this.updateTeams(allyChinpoko, enemyChinpoko);
+        this.stateBasedActions(allyChinpoko, enemyChinpoko);
         this.drawCards(true, 1);
         this.drawCards(false, 1);
         this.setState((state) => ({
@@ -300,6 +305,11 @@ export class Game extends React.Component<GameProps, GameState> {
     }
   }
 
+  doEndOfTurnEffects(allyChinpoko: ChinpokoData, enemyChinpoko: ChinpokoData) {
+    applyHpBoost(allyChinpoko)
+    applyHpBoost(enemyChinpoko)
+  }
+
   updateTeams(allyChinpoko: ChinpokoData, enemyChinpoko: ChinpokoData) {
     let allyTeam = this.props.allyTeam;
     let enemyTeam = this.props.enemyTeam;
@@ -309,7 +319,7 @@ export class Game extends React.Component<GameProps, GameState> {
     this.props.setTeam(enemyTeam, false);
   }
 
-  stateBasedActions(phaseCounters: Array<PhaseCounter>, allyChinpoko: ChinpokoData, enemyChinpoko: ChinpokoData) {
+  stateBasedActions(allyChinpoko: ChinpokoData, enemyChinpoko: ChinpokoData) {
     if(allyChinpoko.hp <= 0) {
       this.handleChinpokoDeath(allyChinpoko, true)
     }

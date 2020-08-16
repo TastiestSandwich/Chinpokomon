@@ -65,7 +65,7 @@ $spritePerspective: 0.3;
       background: #fff;
       border: 3px solid #888;
       margin:0 2em;
-      text-align: center
+      text-align: center;
     }
     &__biomebox{
       width: 130px;
@@ -87,6 +87,11 @@ $spritePerspective: 0.3;
         border: 2px solid #000;
         height: 10px;
         background: #00ff00;
+      }
+      &__hp{
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
       }
     }
 

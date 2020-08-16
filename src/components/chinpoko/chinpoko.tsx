@@ -57,7 +57,7 @@ export function getChinpokoData(storedData: ChinpokoStoredData): ChinpokoData {
 		def: calcStat(storedData.species.baseDEF, storedData.evDEF, storedData.lvl),
 		spe: calcStat(storedData.species.baseSPE, storedData.evSPE, storedData.lvl),
 		powerId: null,
-		hpBoost: Constants.baseStatBoost,
+		hpBoost: Constants.baseHpBoost,
 		atkBoost: Constants.baseStatBoost,
 		defBoost: Constants.baseStatBoost,
 		speBoost: Constants.baseStatBoost
@@ -89,6 +89,12 @@ function getDisplayBoost(boost: number): string {
 	const num = roundTo((boost - 1) * 100, 2)
 	const sign = num >= 0 ? "+" : ""
 	return sign + num + "%"
+}
+
+function getDisplayHpBoost(boost: number): string {
+	const num = Math.round(boost)
+	const sign = num >= 0 ? "+" : ""
+	return sign + num
 }
 
 interface ChinpokoProps {
@@ -161,11 +167,14 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 		const speColor = getNumberColorClass(chinpoko.spe, spe, cpc)
 
 		const atkBoost = getDisplayBoost(chinpoko.atkBoost)
-		const atkBoostColor = getNumberColorClass(1, chinpoko.atkBoost, cpc)
+		const atkBoostColor = getNumberColorClass(Constants.baseStatBoost, chinpoko.atkBoost, cpc)
 		const defBoost = getDisplayBoost(chinpoko.defBoost)
-		const defBoostColor = getNumberColorClass(1, chinpoko.defBoost, cpc)
+		const defBoostColor = getNumberColorClass(Constants.baseStatBoost, chinpoko.defBoost, cpc)
 		const speBoost = getDisplayBoost(chinpoko.speBoost)
-		const speBoostColor = getNumberColorClass(1, chinpoko.speBoost, cpc)
+		const speBoostColor = getNumberColorClass(Constants.baseStatBoost, chinpoko.speBoost, cpc)
+
+		const hpBoost = getDisplayHpBoost(chinpoko.hpBoost)
+		const hpBoostColor = getNumberColorClass(Constants.baseHpBoost, chinpoko.hpBoost, cpc)
 
 		return (
 			<div className={`${cpc}__databox`}>
@@ -182,6 +191,7 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 					</div>
 					<div className="hpbox__hp">
 						<b>HP </b>{chinpoko.hp} / {chinpoko.maxhp}
+						<div className={hpBoostColor}>{hpBoost}</div>
 					</div>
 				</div>
 				<div className={`${cpc}__statbox`}>

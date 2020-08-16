@@ -28,5 +28,13 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"DROP": {
 		name: "DROP",
 		symbol: "fas fa-arrow-down"
+	},
+	"REGEN": {
+		name: "REGEN",
+		symbol: "fas fa-seedling"
+	},
+	"DEGEN": {
+		name: "DEGEN",
+		symbol: "fas fa-skull-crossbones"
 	}
 };

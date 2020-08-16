@@ -235,8 +235,28 @@ export const CardList: { [name:string] : CardData } = {
 			}
 		}]
 	},
-	"Hot Blooded": {
-		name: "Hot Blooded",
+	"Growth": {
+		name: "Growth",
+		text: "The user nourishes itself to regenerate HP",
+		type: TypeList["GRASS"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["REGEN"],
+			parameters: {
+				percentage: 0.15
+			}
+		}]
+	},
+	"Hot Blood": {
+		name: "Hot Blood",
 		text: "Pumps adrenaline to raise Attack",
 		type: TypeList["FIRE"],
 		actions: [{
@@ -296,6 +316,23 @@ export const CardList: { [name:string] : CardData } = {
 		},{
 			effect: EffectList["WAIT"],
 			parameters: {}
+		}]
+	},
+	"Pollution": {
+		name: "Pollution",
+		text: "Contamination reduces the enemy’s health, degenerating its HP",
+		type: TypeList["TOXIC"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DEGEN"],
+			parameters: {
+				power: 20
+			}
 		}]
 	},
 	"Street Smarts": {

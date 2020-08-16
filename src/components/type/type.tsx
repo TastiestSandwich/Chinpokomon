@@ -45,7 +45,7 @@ export const TypeList: {[name: string] : Type} = {
 	},
 	"TOXIC": {
 		name: "TOXIC",
-		symbol: "fas fa-skull-crossbones"
+		symbol: "fas fa-radiation"
 	},
 	"ARTIFICIAL": {
 		name: "ARTIFICIAL",

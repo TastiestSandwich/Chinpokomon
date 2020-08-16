@@ -4,6 +4,7 @@ export const Constants = {
   maxStatBoost: 4,
   minStatBoost: 0.25,
   baseStatBoost: 1,
+  baseHpBoost: 0,
 
   // Phase
   startingPhases: 5,

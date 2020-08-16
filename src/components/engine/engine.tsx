@@ -61,6 +61,29 @@ export function effectDrop(card: CardData, action: CardAction, ally: ChinpokoDat
 	console.log("Drops " + action.parameters.stat + " sharply!")
 }
 
+export function effectRegen(card: CardData, action: CardAction, ally: ChinpokoData) {
+	let regen = calcBoost(action.parameters.percentage, card.type, ally)
+	ally.hpBoost = ally.hpBoost + ally.maxhp * regen
+	console.log("Is regenerating hp!")
+}
+
+export function effectDegen(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
+	let degen = calcDamage(action.parameters.power, card.type, ally, enemy)
+	enemy.hpBoost = enemy.hpBoost - degen
+	console.log("Is losing hp!")
+}
+
+export function applyHpBoost(chinpoko: ChinpokoData) {
+	let hp = chinpoko.hp + chinpoko.hpBoost
+	if(hp > chinpoko.maxhp) {
+		hp = chinpoko.maxhp
+	}
+	if(hp < 0) {
+		hp = 0
+	}
+	chinpoko.hp = hp
+	}
+
 function calcDamage(power: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData):number {
 	if (power === undefined) {
 		return 0;
@@ -91,19 +114,19 @@ function calcHeal(percentage: number | undefined, type: Type, user: ChinpokoData
 	return heal;
 }
 
-export function calcBoost(percentage: number | undefined, type: Type, user: ChinpokoData) {
-	if (percentage === undefined) {
+export function calcBoost(boost: number | undefined, type: Type, user: ChinpokoData) {
+	if (boost === undefined) {
 		return 0;
 	}
-	let boost = percentage * findStab(type, user.storedData.species.biome);
+	boost = boost * findStab(type, user.storedData.species.biome);
 	return boost
 }
 
-export function calcDrop(percentage: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData) {
-	if (percentage === undefined) {
+export function calcDrop(drop: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData) {
+	if (drop === undefined) {
 		return 0;
 	}
-	let drop = percentage * findStab(type, user.storedData.species.biome) * findEffectiveness(type, target.storedData.species.biome)
+	drop = drop * findStab(type, user.storedData.species.biome) * findEffectiveness(type, target.storedData.species.biome)
 	return drop
 }
 
