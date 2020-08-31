@@ -68,8 +68,14 @@ export function effectRegen(card: CardData, action: CardAction, ally: ChinpokoDa
 }
 
 export function effectDegen(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
-	let degen = calcDamage(action.parameters.power, card.type, ally, enemy)
-	enemy.hpBoost = enemy.hpBoost - degen
+	let degen = calcDrop(action.parameters.percentage, card.type, ally, enemy)
+	enemy.hpBoost = enemy.hpBoost - ally.maxhp * degen
+	console.log("Is degenerating hp!")
+}
+
+export function effectDot(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
+	let dot = calcDamage(action.parameters.power, card.type, ally, enemy)
+	enemy.hpBoost = enemy.hpBoost - dot
 	console.log("Is losing hp!")
 }
 

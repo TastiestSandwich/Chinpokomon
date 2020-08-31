@@ -331,7 +331,7 @@ export const CardList: { [name:string] : CardData } = {
 		},{
 			effect: EffectList["DEGEN"],
 			parameters: {
-				power: 20
+				percentage: 0.15
 			}
 		}]
 	},
