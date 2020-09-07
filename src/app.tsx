@@ -15,7 +15,7 @@ export const enum AppView {
   GAME
 }
 
-function getPowerList(team: {[id: number] : ChinpokoData}) : {[id: number] : CardInstance} {
+export function getPowerList(team: {[id: number] : ChinpokoData}) : {[id: number] : CardInstance} {
   let powerList: {[id: number] : CardInstance} = {};
   let id = 0;
   powerList[id] = getCardInstance(id, PowerList["Change"], false, CardSource.POWER);
@@ -166,6 +166,7 @@ class App extends React.Component<{}, AppState> {
           changeView={this.changeView} 
           setTeam={this.setTeam} 
           swapPlayers={this.swapPlayers}
+          setPowerList={this.setPowerList}
           allyTeam={this.state.allyTeam} 
           enemyTeam={this.state.enemyTeam}
           ally={this.state.ally}/>

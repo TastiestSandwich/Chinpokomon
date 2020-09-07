@@ -69,15 +69,23 @@ $cardBorderSize: 3px;
 			background-color:#355;
 		}
 		&-EARTH{
-			border-color: saddlebrown;
+			border-color: goldenrod;
 			background-color:#333;
 		}
 		&-WIND{
-			border-color: skyblue;
+			border-color: cyan;
 			background-color:#333;
 		}
 		&-COLD{
-			border-color: cornflowerblue;
+			border-color: lightblue;
+			background-color:#333;
+		}
+		&-TOXIC{
+			border-color: magenta;
+			background-color:#333;
+		}
+		&-ARTIFICIAL{
+			border-color: olive;
 			background-color:#333;
 		}
 	}

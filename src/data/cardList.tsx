@@ -275,7 +275,8 @@ export const CardList: { [name:string] : CardData } = {
 			effect: EffectList["BOOST"],
 			parameters: {
 				percentage: 0.7,
-				stat: "ATK"
+				stat: "ATK",
+				ally: true
 			}
 		}]
 	},
@@ -293,7 +294,8 @@ export const CardList: { [name:string] : CardData } = {
 			effect: EffectList["BOOST"],
 			parameters: {
 				percentage: 0.7,
-				stat: "DEF"
+				stat: "DEF",
+				ally: true
 			}
 		},{
 			effect: EffectList["WAIT"],
@@ -311,7 +313,8 @@ export const CardList: { [name:string] : CardData } = {
 			effect: EffectList["BOOST"],
 			parameters: {
 				percentage: 0.7,
-				stat: "SPE"
+				stat: "SPE",
+				ally: true
 			}
 		},{
 			effect: EffectList["WAIT"],
@@ -349,7 +352,8 @@ export const CardList: { [name:string] : CardData } = {
 			effect: EffectList["DROP"],
 			parameters: {
 				percentage: 0.7,
-				stat: "ATK"
+				stat: "ATK",
+				ally: false
 			}
 		},{
 			effect: EffectList["WAIT"],
@@ -370,7 +374,8 @@ export const CardList: { [name:string] : CardData } = {
 			effect: EffectList["DROP"],
 			parameters: {
 				percentage: 0.7,
-				stat: "DEF"
+				stat: "DEF",
+				ally: false
 			}
 		}]
 	},
@@ -385,8 +390,29 @@ export const CardList: { [name:string] : CardData } = {
 			effect: EffectList["DROP"],
 			parameters: {
 				percentage: 0.7,
-				stat: "SPE"
+				stat: "SPE",
+				ally: false
 			}
 		}]
 	},
+	"Moody mood": {
+		name: "Moody mood",
+		text: "The user changes in an unpredictable way, dropping a random stat while sharply increasing another",
+		type: TypeList["MISTERY"],
+		actions: [{
+			effect: EffectList["DROP"],
+			parameters: {
+				percentage: 0.5,
+				stat: "RND",
+				ally: true
+			}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				percentage: 1,
+				stat: "RND",
+				ally: true
+			}
+		}]
+	}
 }

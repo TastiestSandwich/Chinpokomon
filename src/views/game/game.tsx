@@ -245,7 +245,7 @@ export class Game extends React.Component<GameProps, GameState> {
     else if(action.effect.name === "ABSORB") { effectAbsorb(instance.card, action, ally, enemy); }
     else if(action.effect.name === "HEAL") { effectHeal(instance.card, action, ally); }
     else if(action.effect.name === "CHANGE") { this.effectChangeModal(isAlly); }
-    else if(action.effect.name === "BOOST") { effectBoost(instance.card, action, ally) }
+    else if(action.effect.name === "BOOST") { effectBoost(instance.card, action, ally, enemy) }
     else if(action.effect.name === "DROP") { effectDrop(instance.card, action, ally, enemy) }
     else if(action.effect.name === "REGEN") { effectRegen(instance.card, action, ally) }
     else if(action.effect.name === "DEGEN") { effectDegen(instance.card, action, ally, enemy) }
@@ -289,7 +289,6 @@ export class Game extends React.Component<GameProps, GameState> {
       } else {
         this.doEndOfTurnEffects(allyChinpoko, enemyChinpoko);
         this.updateTeams(allyChinpoko, enemyChinpoko);
-        this.stateBasedActions(allyChinpoko, enemyChinpoko);
         this.drawCards(true, 1);
         this.drawCards(false, 1);
         this.setState((state) => ({
@@ -301,6 +300,7 @@ export class Game extends React.Component<GameProps, GameState> {
           currentPhase: null,
           cyborgClicked: false
         }))
+        this.stateBasedActions(allyChinpoko, enemyChinpoko);
       }
     }
   }
@@ -499,7 +499,7 @@ export class Game extends React.Component<GameProps, GameState> {
       // sum speed to each phaseCounter and try again
       for (const pc of phaseCounters) {
         const myChinpoko: ChinpokoData = pc.isAlly ? allyChinpoko : enemyChinpoko;
-        pc.value = pc.value + myChinpoko.spe;
+        pc.value = pc.value + getChinpokoSpe(myChinpoko)
       }
       this.solveNextPhase(phaseCounters, phaseLimit, allyChinpoko, enemyChinpoko);
     }
@@ -527,7 +527,7 @@ export class Game extends React.Component<GameProps, GameState> {
     const team = this.state.allyChangeTeam ? this.props.allyTeam : this.props.enemyTeam
     const currentId = this.state.allyChangeTeam ? this.state.allyChinpoko : this.state.enemyChinpoko
     return (
-      <Modal open={open} title="change chinpoko">
+      <Modal open={open} title="change chinpoko" anticheat={this.props.antiCheat} ally={this.state.allyChangeTeam}>
         <ChangeChinpokoTeam ally={this.state.allyChangeTeam} team={team} currentChinpokoId={currentId}
         onChinpokoClick={this.handleChangeChinpokoClick}/>
       </Modal>

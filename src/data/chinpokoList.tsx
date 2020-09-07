@@ -25,4 +25,20 @@ export const ChinpokoList: Array<ChinpokoStoredData> = [{
   name: "Alejandro",
   species: BaseChinpokoList["MORSA"],
   lvl: 50, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
+}, {
+  name: "Mojano",
+  species: BaseChinpokoList["ESCUALO"],
+  lvl: 50, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
+}, {
+  name: "Alix",
+  species: BaseChinpokoList["CUERVO"],
+  lvl: 50, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
+}, {
+  name: "Toni",
+  species: BaseChinpokoList["SERPIENTE"],
+  lvl: 50, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
+}, {
+  name: "LLamas bros",
+  species: BaseChinpokoList["BABOSAS"],
+  lvl: 50, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
 }];

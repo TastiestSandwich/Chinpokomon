@@ -7,6 +7,10 @@ import nutria from '../images/nutria.png'
 import gato from '../images/gato.png'
 import ardilla from '../images/ardilla.png'
 import morsa from '../images/morsa.png'
+import escualo from '../images/escualo.png'
+import serpiente from '../images/serpiente.png'
+import cuervo from '../images/cuervo.png'
+import babosas from '../images/babosas.png'
 
 export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 	"BISONTE": {
@@ -68,5 +72,45 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseSPE: 50,
     biome: BiomeList["ARCTIC"],
     power: PowerList["Deep Freeze"]
+  },
+  "ESCUALO": {
+    speciesName: "ESCUALO",
+    sprite: escualo,
+    baseHP: 120,
+    baseATK: 80,
+    baseDEF: 80,
+    baseSPE: 40,
+    biome: BiomeList["SEA"],
+    power: PowerList["Bloodthirst"]
+  },
+  "SERPIENTE": {
+    speciesName: "SERPIENTE",
+    sprite: serpiente,
+    baseHP: 60,
+    baseATK: 60,
+    baseDEF: 70,
+    baseSPE: 130,
+    biome: BiomeList["INDUSTRIAL"],
+    power: PowerList["Chemicatalyst"]
+  },
+  "BABOSAS": {
+    speciesName: "BABOSAS",
+    sprite: babosas,
+    baseHP: 80,
+    baseATK: 80,
+    baseDEF: 80,
+    baseSPE: 80,
+    biome: BiomeList["VOLCANO"],
+    power: PowerList["Chemicatalyst"]
+  },
+  "CUERVO": {
+    speciesName: "CUERVO",
+    sprite: cuervo,
+    baseHP: 70,
+    baseATK: 80,
+    baseDEF: 70,
+    baseSPE: 100,
+    biome: BiomeList["FIELD"],
+    power: PowerList["Chemicatalyst"]
   }
 };

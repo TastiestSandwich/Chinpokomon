@@ -41,40 +41,44 @@ export function effectHeal(card: CardData, action: CardAction, ally: ChinpokoDat
   console.log("Heals " + heal + " points of damage!");
 }
 
-export function effectBoost(card: CardData, action: CardAction, ally: ChinpokoData) {
-	let boost = calcBoost(action.parameters.percentage, card.type, ally);
-	boost = getChinpokoStatBoost(action.parameters.stat, ally) * (1 + boost);
-	if (boost > Constants.maxStatBoost) {
+export function effectBoost(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
+	let boost = calcStatMod(action.parameters.percentage, card.type, ally, action.parameters.ally ? null : enemy);
+	let chinpoko = action.parameters.ally ? ally : enemy
+	let stat = getStatString(action.parameters.stat)
+	boost = getChinpokoStatBoost(stat, chinpoko) * (1 + boost);
+	if (stat != "HP" && boost > Constants.maxStatBoost) {
 		boost = Constants.maxStatBoost
 	}
-	setChinpokoStatBoost(boost, action.parameters.stat, ally)
-	console.log("Raises " + action.parameters.stat + " sharply!");
+	setChinpokoStatBoost(boost, stat, chinpoko)
+	console.log("Raises " + stat + " sharply!");
 }
 
 export function effectDrop(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
-	let drop = calcDrop(action.parameters.percentage, card.type, ally, enemy)
-	drop = getChinpokoStatBoost(action.parameters.stat, enemy) * (1 / (1 + drop))
-	if (drop < Constants.minStatBoost) {
+	let drop = calcStatMod(action.parameters.percentage, card.type, ally, action.parameters.ally ? null : enemy)
+	let chinpoko = action.parameters.ally ? ally : enemy
+	let stat = getStatString(action.parameters.stat)
+	drop = getChinpokoStatBoost(stat, chinpoko) * (1 / (1 + drop))
+	if (stat != "HP" && drop < Constants.minStatBoost) {
 		drop = Constants.minStatBoost
 	}
-	setChinpokoStatBoost(drop, action.parameters.stat, enemy)
-	console.log("Drops " + action.parameters.stat + " sharply!")
+	setChinpokoStatBoost(drop, stat, chinpoko)
+	console.log("Drops " + stat + " sharply!")
 }
 
 export function effectRegen(card: CardData, action: CardAction, ally: ChinpokoData) {
-	let regen = calcBoost(action.parameters.percentage, card.type, ally)
+	let regen = calcStatMod(action.parameters.percentage, card.type, ally, null)
 	ally.hpBoost = ally.hpBoost + ally.maxhp * regen
 	console.log("Is regenerating hp!")
 }
 
 export function effectDegen(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
-	let degen = calcDrop(action.parameters.percentage, card.type, ally, enemy)
-	enemy.hpBoost = enemy.hpBoost - ally.maxhp * degen
+	let degen = calcStatMod(action.parameters.percentage, card.type, ally, enemy)
+	enemy.hpBoost = enemy.hpBoost - enemy.maxhp * degen
 	console.log("Is degenerating hp!")
 }
 
 export function effectDot(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
-	let dot = calcDamage(action.parameters.power, card.type, ally, enemy)
+	let dot = calcStatMod(action.parameters.power, card.type, ally, enemy)
 	enemy.hpBoost = enemy.hpBoost - dot
 	console.log("Is losing hp!")
 }
@@ -87,8 +91,8 @@ export function applyHpBoost(chinpoko: ChinpokoData) {
 	if(hp < 0) {
 		hp = 0
 	}
-	chinpoko.hp = hp
-	}
+	chinpoko.hp = Math.round(hp)
+}
 
 function calcDamage(power: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData):number {
 	if (power === undefined) {
@@ -120,20 +124,32 @@ function calcHeal(percentage: number | undefined, type: Type, user: ChinpokoData
 	return heal;
 }
 
-export function calcBoost(boost: number | undefined, type: Type, user: ChinpokoData) {
-	if (boost === undefined) {
+export function calcStatMod(mod: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData | null) {
+	if (mod === undefined) {
 		return 0;
 	}
-	boost = boost * findStab(type, user.storedData.species.biome);
-	return boost
+	let effectiveness = target != null ? findEffectiveness(type, target.storedData.species.biome) : 1
+	mod = mod * findStab(type, user.storedData.species.biome) * effectiveness
+	return mod
 }
 
-export function calcDrop(drop: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData) {
-	if (drop === undefined) {
-		return 0;
+function getStatString(stat: string | undefined): string {
+	if (stat == undefined || stat === "RND") {
+		return getRandomStat()
+	} else {
+		return stat
 	}
-	drop = drop * findStab(type, user.storedData.species.biome) * findEffectiveness(type, target.storedData.species.biome)
-	return drop
+}
+
+function getRandomStat(): string {
+	let random = Math.random() * 3
+	if (random < 1) {
+		return "ATK"
+	} else if (random < 2) {
+		return "DEF"
+	} else {
+		return "SPE"
+	}
 }
 
 function getChinpokoStatBoost(stat: string | undefined, chinpoko: ChinpokoData): number {

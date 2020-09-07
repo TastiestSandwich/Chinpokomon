@@ -132,5 +132,42 @@ export const PowerList: { [name:string] : CardData } = {
         power: 20,
       }
     }]
+  },
+  "Bloodthirst": {
+    name: "Bloodthirst",
+    text: "Takes a small bite of the enemy and the smell of blood raises its Speed",
+    type: TypeList["NEUTRAL"],
+    actions: [{
+      effect: EffectList["DAMAGE"],
+      parameters: {
+        power: 40
+      }
+    },{
+      effect: EffectList["BOOST"],
+      parameters: {
+        percentage: 0.5,
+        stat: "SPE",
+        ally: true
+      }
+    },{
+      effect: EffectList["WAIT"],
+      parameters: {}
+    }]
+  },
+  "Chemicatalyst": {
+    name: "Chemicatalyst",
+    text: "Injects a catalyst that empowers any chemical in the enemy's body",
+    type: TypeList["TOXIC"],
+    actions: [{
+      effect: EffectList["WAIT"],
+      parameters: {}
+    },{
+      effect: EffectList["BOOST"],
+      parameters: {
+        percentage: 0.5,
+        stat: "HP",
+        ally: false
+      }
+    }]
   }
 }
