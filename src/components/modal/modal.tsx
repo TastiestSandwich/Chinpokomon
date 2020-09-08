@@ -5,7 +5,6 @@ interface ModalProps {
   open: boolean
   title?: string
   anticheat: boolean
-  ally: boolean
 }
 
 interface ModalState {

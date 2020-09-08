@@ -43,7 +43,7 @@ export const BiomeList: {[name: string] : Biome} = {
   "DESERT": {
     name: "DESERT",
     weakness: [TypeList["WATER"], TypeList["COLD"]],
-    resistance: [TypeList["FIRE"], TypeList["EARTH"]]
+    resistance: [TypeList["FIRE"], TypeList["WIND"]]
   },
   "ARCTIC": {
     name: "ARCTIC",
@@ -53,7 +53,7 @@ export const BiomeList: {[name: string] : Biome} = {
   "FOREST": {
     name: "FOREST",
     weakness: [TypeList["FIRE"], TypeList["ARTIFICIAL"]],
-    resistance: [TypeList["GRASS"], TypeList["WIND"]]
+    resistance: [TypeList["GRASS"], TypeList["EARTH"]]
   },
   "MOUNTAIN": {
     name: "MOUNTAIN",

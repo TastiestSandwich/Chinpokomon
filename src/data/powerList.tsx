@@ -169,5 +169,25 @@ export const PowerList: { [name:string] : CardData } = {
         ally: false
       }
     }]
+  },
+  "Danger Dive": {
+    name: "Danger Dive",
+    text: "Dives into the enemy, boosting attack and speed from the fall",
+    type: TypeList["WIND"],
+    actions: [{
+      effect: EffectList["BOOST"],
+      parameters: {
+        percentage: 0.25,
+        stat: "SPE",
+        ally: true
+      }
+    },{
+      effect: EffectList["BOOST"],
+      parameters: {
+        percentage: 0.25,
+        stat: "ATK",
+        ally: true
+      }
+    }]
   }
 }

@@ -23,13 +23,13 @@ export class Info extends React.Component<InfoProps, {} > {
             </tr>
             <tr>
               <td>
-                <i className="fas fa-archive"/>
+                <i className="fas fa-folder-open"/>
               </td>
               <td>{totalDeck}</td>
             </tr>
             <tr>
               <td>
-                <i className="fas fa-trash-alt"/>
+                <i className="fas fa-trash"/>
               </td>
               <td>{totalDiscard}</td>
             </tr>

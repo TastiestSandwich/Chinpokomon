@@ -36,5 +36,17 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"DEGEN": {
 		name: "DEGEN",
 		symbol: "fas fa-skull-crossbones"
+	},
+	"DISCARD": {
+		name: "DISCARD",
+		symbol: "fas fa-trash-restore"
+	},
+	"DRAW": {
+		name: "DRAW",
+		symbol: "fas fa-lightbulb"
+	},
+	"COPYCARD": {
+		name: "COPYCARD",
+		symbol: "far fa-copy"
 	}
 };

@@ -11,6 +11,7 @@ import escualo from '../images/escualo.png'
 import serpiente from '../images/serpiente.png'
 import cuervo from '../images/cuervo.png'
 import babosas from '../images/babosas.png'
+import aguila from '../images/aguila.png'
 
 export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 	"BISONTE": {
@@ -112,5 +113,15 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseSPE: 100,
     biome: BiomeList["FIELD"],
     power: PowerList["Chemicatalyst"]
+  },
+  "AGUILA": {
+    speciesName: "AGUILA",
+    sprite: aguila,
+    baseHP: 60,
+    baseATK: 70,
+    baseDEF: 100,
+    baseSPE: 90,
+    biome: BiomeList["MOUNTAIN"],
+    power: PowerList["Danger Dive"]
   }
 };
