@@ -209,14 +209,13 @@ export const PowerList: { [name:string] : CardData } = {
   },
   "Replicate": {
     name: "Replicate",
-    text: "Imitates the opponent, creating a copy of a card in their hand",
+    text: "Imitates the opponent, discarding a card to create a copy of an enemy card",
     type: TypeList["TOXIC"],
     actions: [{
-      effect: EffectList["WAIT"],
-      parameters: {}
-    },{
-      effect: EffectList["WAIT"],
-      parameters: {}
+      effect: EffectList["DISCARD"],
+      parameters: {
+        ally: true
+      }
     },{
       effect: EffectList["WAIT"],
       parameters: {}

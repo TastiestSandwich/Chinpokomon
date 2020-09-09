@@ -18,11 +18,11 @@ export const enum AppView {
 export function getPowerList(team: {[id: number] : ChinpokoData}) : {[id: number] : CardInstance} {
   let powerList: {[id: number] : CardInstance} = {};
   let id = 0;
-  powerList[id] = getCardInstance(id, PowerList["Change"], false, CardSource.POWER);
+  powerList[id] = getCardInstance(id, PowerList["Change"], false, false, CardSource.POWER);
 
   for(let chinpoko of Object.values(team)){
     id++;
-    powerList[id] = getCardInstance(id, chinpoko.storedData.species.power, false, CardSource.POWER);
+    powerList[id] = getCardInstance(id, chinpoko.storedData.species.power, false, false, CardSource.POWER);
     chinpoko.powerId = id;
   }
   return powerList;

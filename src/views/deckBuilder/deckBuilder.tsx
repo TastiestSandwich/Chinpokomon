@@ -17,7 +17,7 @@ function transformInputToDeckList(inputArray: Array<string>): {[id: number] : Ca
   const deckList: {[id: number] : CardInstance} = {};
   for(let i=0; i < inputArray.length; i++) {
     const card: CardData = CardList[inputArray[i]];
-    deckList[i] = getCardInstance(i, card, true, CardSource.DECK);
+    deckList[i] = getCardInstance(i, card, true, false, CardSource.DECK);
   }
   return deckList;
 }

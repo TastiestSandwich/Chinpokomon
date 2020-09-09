@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import { CardInstance, shuffle, CardSource } from '../../components/card/card';
+import { CardInstance, shuffle, CardSource, getCardInstance } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData, getChinpokoSpe } from '../../components/chinpoko/chinpoko';
 import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
@@ -259,7 +259,7 @@ export class Game extends React.Component<GameProps, GameState> {
     else if(action.effect.name === "REGEN") { effectRegen(instance.card, action, ally) }
     else if(action.effect.name === "DEGEN") { effectDegen(instance.card, action, ally, enemy) }
     else if(action.effect.name === "DISCARD") { this.effectDiscard(action, isAlly) }
-    else if(action.effect.name === "COPY") { this.effectCopyCard(action, isAlly) }
+    else if(action.effect.name === "COPYCARD") { this.effectCopyCard(action, isAlly) }
     else if(action.effect.name === "DRAW") { this.effectDraw(action, isAlly) }
     else if(action.effect.name === "WAIT") { }
   }
@@ -467,8 +467,29 @@ export class Game extends React.Component<GameProps, GameState> {
     }
   }
 
-  handleCopyCardClick = (id: number, ally: boolean) => {
-    // TODO: Add temporal card to decklist, then add to hand
+  handleCopyCardClick = (id: number, fromAlly: boolean) => {
+    // fromAlly references the hand being copied
+    const ally = !fromAlly
+    const allyDeck = ally ? {...this.props.allyDeckList} : {...this.props.enemyDeckList}
+    const enemyDeck = ally ? this.props.enemyDeckList : this.props.allyDeckList
+    const newId: number = Object.keys(allyDeck).length
+    const card : CardInstance = getCardInstance(newId, enemyDeck[id].card, enemyDeck[id].isRemovable, true, CardSource.DECK)
+    allyDeck[newId] = card
+    this.props.setDeckList(allyDeck, ally)
+
+    const hand: Array<number> = ally ? [...this.state.allyHand] : [...this.state.enemyHand]
+    hand.push(newId)
+    if (ally) {
+      this.setState((state) => ({
+        stage: state.previousStage,
+        allyHand: hand
+      }))
+    } else {
+      this.setState((state) => ({
+        stage: state.previousStage,
+        enemyHand: hand
+      }))
+    }
   }
 
   handleCyborgClick = () => {

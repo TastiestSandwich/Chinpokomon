@@ -25,6 +25,7 @@ export interface CardInstance {
 	isClicked: boolean
 	isRemovable: boolean
   source: CardSource
+  isTemporal: boolean
 }
 
 export interface CardData {
@@ -41,17 +42,18 @@ function getRandomCard() {
 
 export function getRandomCardInstance(id: number) {
 	const card = getRandomCard();
-	const instance = getCardInstance(id, card, true, CardSource.DECK);
+	const instance = getCardInstance(id, card, true, false, CardSource.DECK);
 	return instance
 }
 
-export function getCardInstance(id: number, card: CardData, isRemovable: boolean, source: CardSource) {
+export function getCardInstance(id: number, card: CardData, isRemovable: boolean, isTemporal: boolean, source: CardSource) {
 	const instance: CardInstance = {
 		card: card,
 		id: id,
 		isClicked: false,
 		isRemovable: isRemovable,
-    source: source
+    source: source,
+    isTemporal: isTemporal
 	};
 	return instance;
 }
