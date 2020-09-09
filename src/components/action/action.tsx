@@ -16,6 +16,7 @@ export interface ActionParameters {
   percentage?: number
   stat?: string
   ally?: boolean
+  number?: number
 }
 
 interface ActionSymbolProps {

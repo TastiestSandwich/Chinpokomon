@@ -11,6 +11,7 @@ import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
 import Modal from '../../components/modal/modal';
 import ChangeChinpokoTeam from '../../components/modal/changeChinpokoTeam';
+import ChooseCard from '../../components/modal/chooseCard';
 import { Cyborg, getCyborgPhases } from '../../components/cyborg/cyborg';
 import { Info } from '../../components/info/info';
 
@@ -18,7 +19,13 @@ export const enum GameStage {
   PLAY,
   RESOLUTION,
   GAMEOVER,
-  CHANGE_CHINPOKO_MODAL
+  MODAL
+}
+
+export const enum ModalType {
+  CHANGE_CHINPOKO,
+  CHOOSE_DISCARD,
+  CHOOSE_COPY_CARD
 }
 
 interface GameProps {
@@ -56,7 +63,8 @@ export interface GameState {
   phaseCounters: Array<PhaseCounter>
   phaseLimit: number
   currentPhase: CurrentPhase | null
-  allyChangeTeam: boolean
+  modalAlly: boolean
+  modalType: ModalType
   cyborgClicked: boolean
 }
 
@@ -83,7 +91,8 @@ export class Game extends React.Component<GameProps, GameState> {
       phaseCounters: [],
       phaseLimit: 0,
       currentPhase: null,
-      allyChangeTeam: true,
+      modalAlly: true,
+      modalType: ModalType.CHANGE_CHINPOKO,
       cyborgClicked: false
     };
   }
@@ -213,7 +222,7 @@ export class Game extends React.Component<GameProps, GameState> {
     }))
   }
 
-  discardCardIfNeeded(instance: CardInstance, ally: boolean) {
+  discardCardIfAble(instance: CardInstance, ally: boolean) {
     const myHand: Array<number> = ally? [...this.state.allyHand] : [...this.state.enemyHand];
     const myDiscard: Array<number> = ally? [...this.state.allyDiscard] : [...this.state.enemyDiscard];
     const myDeck = ally ? {...this.props.allyDeckList} : {...this.props.enemyDeckList};
@@ -249,6 +258,9 @@ export class Game extends React.Component<GameProps, GameState> {
     else if(action.effect.name === "DROP") { effectDrop(instance.card, action, ally, enemy) }
     else if(action.effect.name === "REGEN") { effectRegen(instance.card, action, ally) }
     else if(action.effect.name === "DEGEN") { effectDegen(instance.card, action, ally, enemy) }
+    else if(action.effect.name === "DISCARD") { this.effectDiscard(action, isAlly) }
+    else if(action.effect.name === "COPY") { this.effectCopyCard(action, isAlly) }
+    else if(action.effect.name === "DRAW") { this.effectDraw(action, isAlly) }
     else if(action.effect.name === "WAIT") { }
   }
 
@@ -390,9 +402,10 @@ export class Game extends React.Component<GameProps, GameState> {
       this.randomChange(false)
     } else {
       this.setState((state) => ({
-        stage: GameStage.CHANGE_CHINPOKO_MODAL,
+        stage: GameStage.MODAL,
         previousStage: state.stage,
-        allyChangeTeam: ally
+        modalAlly: ally,
+        modalType: ModalType.CHANGE_CHINPOKO
       }))
     }
   }
@@ -409,6 +422,53 @@ export class Game extends React.Component<GameProps, GameState> {
         enemyChinpoko: id
       }))
     }
+  }
+
+  effectDraw(action: CardAction, isAlly: boolean){
+    const ally : boolean = action.parameters.ally === isAlly
+    let number = action.parameters.number
+    if (number == undefined) { number = 0 }
+    this.drawCards(ally, number)
+  }
+
+  effectDiscard(action: CardAction, isAlly: boolean) {
+    const ally : boolean = action.parameters.ally === isAlly
+    if (this.props.cyborg && !ally) {
+      // TODO: MAKE CYBORG DISCARD
+    } else {
+      this.setState((state) => ({
+        stage: GameStage.MODAL,
+        previousStage: state.stage,
+        modalAlly: ally,
+        modalType: ModalType.CHOOSE_DISCARD
+      }))
+    }
+  }
+
+  handleDiscardClick = (id: number, ally: boolean) => {
+    const deck = ally ? this.props.allyDeckList : this.props.enemyDeckList
+    this.discardCardIfAble(deck[id], ally)
+    this.setState((state) => ({
+      stage: state.previousStage
+    }))
+  }
+
+  effectCopyCard(action: CardAction, isAlly: boolean) {
+    const ally : boolean = action.parameters.ally === isAlly
+    if (this.props.cyborg && ally) {
+      // TODO: MAKE CYBORG CHOOSE COPY
+    } else {
+      this.setState((state) => ({
+        stage: GameStage.MODAL,
+        previousStage: state.stage,
+        modalAlly: ally,
+        modalType: ModalType.CHOOSE_COPY_CARD
+      }))
+    }
+  }
+
+  handleCopyCardClick = (id: number, ally: boolean) => {
+    // TODO: Add temporal card to decklist, then add to hand
   }
 
   handleCyborgClick = () => {
@@ -482,7 +542,7 @@ export class Game extends React.Component<GameProps, GameState> {
           this.handleCardAction(instance, action, phaseCounter.isAlly, myChinpoko, otherChinpoko);
 
           if(phase.isEnd) {
-            this.discardCardIfNeeded(instance, phaseCounter.isAlly);
+            this.discardCardIfAble(instance, phaseCounter.isAlly);
           }
         } else {
           this.increaseStoredPhases(phaseCounter.isAlly)
@@ -522,15 +582,49 @@ export class Game extends React.Component<GameProps, GameState> {
     );
   }
 
-  renderModals() {
-    const open = this.state.stage === GameStage.CHANGE_CHINPOKO_MODAL
-    const team = this.state.allyChangeTeam ? this.props.allyTeam : this.props.enemyTeam
-    const currentId = this.state.allyChangeTeam ? this.state.allyChinpoko : this.state.enemyChinpoko
+  renderChangeModal() {
+    const open = this.state.stage === GameStage.MODAL && this.state.modalType === ModalType.CHANGE_CHINPOKO
+    const team = this.state.modalAlly ? this.props.allyTeam : this.props.enemyTeam
+    const currentId = this.state.modalAlly ? this.state.allyChinpoko : this.state.enemyChinpoko
     return (
-      <Modal open={open} title="CHANGE CHINPOKO" anticheat={this.props.antiCheat}>
-        <ChangeChinpokoTeam ally={this.state.allyChangeTeam} team={team} currentChinpokoId={currentId}
-        onChinpokoClick={this.handleChangeChinpokoClick}/>
+      <Modal open={open} title="CHOOSE CHINPOKO TO CHANGE">
+        <ChangeChinpokoTeam ally={this.state.modalAlly} team={team} currentChinpokoId={currentId}
+        onChinpokoClick={this.handleChangeChinpokoClick} antiCheat={this.props.antiCheat}/>
       </Modal>
+    )
+  }
+
+  renderChooseCardModal() {
+    const open = this.state.stage === GameStage.MODAL && (this.state.modalType === ModalType.CHOOSE_COPY_CARD || this.state.modalType === ModalType.CHOOSE_DISCARD)
+    const hand  = this.state.modalAlly ? this.state.allyHand : this.state.enemyHand
+    const deck = this.state.modalAlly ? this.props.allyDeckList : this.props.enemyDeckList
+    //JuEj
+    let cards: {[id: number] : CardInstance} = {}
+    hand.map(a => deck[a]).filter(card => !card.isClicked && card.isRemovable).forEach(card => cards[card.id] = card)
+
+    let title = "undefined"
+    let cardClick = (id: number, ally: boolean) => {}
+    if (this.state.modalType === ModalType.CHOOSE_COPY_CARD) { 
+      title = "CHOOSE CARD TO COPY"
+      cardClick = this.handleCopyCardClick
+    } else if (this.state.modalType === ModalType.CHOOSE_DISCARD) { 
+      title = "CHOOSE CARD TO DISCARD" 
+      cardClick = this.handleDiscardClick
+    }
+
+    return(
+      <Modal open={open} title={title}>
+        <ChooseCard ally={this.state.modalAlly} cards={cards} anticheat={this.props.antiCheat} onCardClick={cardClick}/>
+      </Modal>
+    )
+  }
+
+  renderModals() {
+    return(
+      <>
+      { this.renderChangeModal() }
+      { this.renderChooseCardModal() }
+      </>
     )
   }
 

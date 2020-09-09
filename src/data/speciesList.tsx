@@ -102,7 +102,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseDEF: 80,
     baseSPE: 80,
     biome: BiomeList["VOLCANO"],
-    power: PowerList["Chemicatalyst"]
+    power: PowerList["Replicate"]
   },
   "CUERVO": {
     speciesName: "CUERVO",
@@ -112,7 +112,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseDEF: 70,
     baseSPE: 100,
     biome: BiomeList["FIELD"],
-    power: PowerList["Chemicatalyst"]
+    power: PowerList["Landfill Looting"]
   },
   "AGUILA": {
     speciesName: "AGUILA",

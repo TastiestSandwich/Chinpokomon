@@ -189,5 +189,42 @@ export const PowerList: { [name:string] : CardData } = {
         ally: true
       }
     }]
+  },
+  "Landfill Looting": {
+    name: "Landfill Looting",
+    text: "Looks for shiny trash, discarding a card to draw a new one",
+    type: TypeList["ARTIFICIAL"],
+    actions: [{
+      effect: EffectList["DISCARD"],
+      parameters: {
+        ally: true
+      }
+    },{
+      effect: EffectList["DRAW"],
+      parameters: {
+        number: 1,
+        ally: true
+      }
+    }]
+  },
+  "Replicate": {
+    name: "Replicate",
+    text: "Imitates the opponent, creating a copy of a card in their hand",
+    type: TypeList["TOXIC"],
+    actions: [{
+      effect: EffectList["WAIT"],
+      parameters: {}
+    },{
+      effect: EffectList["WAIT"],
+      parameters: {}
+    },{
+      effect: EffectList["WAIT"],
+      parameters: {}
+    },{
+      effect: EffectList["COPYCARD"],
+      parameters: {
+        ally: false
+      }
+    }]
   }
 }
