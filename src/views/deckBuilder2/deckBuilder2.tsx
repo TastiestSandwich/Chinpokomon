@@ -3,7 +3,7 @@ import './deckBuilder.scss';
 import { AppView } from '../../app';
 import { CardInstance, getRandomCardInstance, getCardInstance, CardData, CardSource } from '../../components/card/card';
 import { CardList } from '../../data/cardList';
-import { DeckCard } from './deckCard';
+import { DeckCard } from '../deckBuilder/deckCard';
 
 export function getRandomDeckList(size: number) {
   let deckList: {[id: number] : CardInstance} = {};
@@ -37,6 +37,9 @@ interface DeckBuilderProps {
   allyDeckList: {[id: number] : CardInstance}
   enemyDeckList: {[id: number] : CardInstance}
   ally: boolean
+  allyDeck: Array<number>
+  enemyDeck: Array<number>
+  setDeck: (deck: Array<number>, ally: boolean) => void
 }
 
 interface DeckBuilderState {
@@ -44,7 +47,7 @@ interface DeckBuilderState {
   input: string
 }
 
-export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderState> {
+export class DeckBuilder2 extends React.Component<DeckBuilderProps, DeckBuilderState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -86,22 +89,22 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
     const cardKeys = Object.keys(deckList);
 
   	return (
-  		<div className="deck-builder-component">
-        <button className="deck-builder-component__start-button" onClick={this.changeViewToStart}>
+  		<div className="deck-builder2-component">
+        <button className="deck-builder2-component__start-button" onClick={this.changeViewToStart}>
           BACK
         </button>
-  			<div className="deck-builder-component__title">
+  			<div className="deck-builder2-component__title">
   				DECK BUILDER
   			</div>
-        <div className="deck-builder-component__subtitle">
-          <div className="deck-builder-component__player">
+        <div className="deck-builder2-component__subtitle">
+          <div className="deck-builder2-component__player">
             {player}
           </div>
-          <button className="deck-builder-component__player-button" onClick={this.handleChangePlayer}>
+          <button className="deck-builder2-component__player-button" onClick={this.handleChangePlayer}>
             CHANGE PLAYER
           </button>
         </div>
-        <div className="deck-builder-component__deck">
+        <div className="deck-builder2-component__deck">
           { cardKeys.map((key) => (
           <DeckCard
             key={key}
@@ -109,14 +112,14 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
            />
           ))}
         </div>
-        <div className="deck-builder-component__body">
-          <button className="deck-builder-component__submit-button" onClick={this.handleSubmit}>
+        <div className="deck-builder2-component__body">
+          <button className="deck-builder2-component__submit-button" onClick={this.handleSubmit}>
             SUBMIT
           </button>
-          <textarea className="deck-builder-component__input" onChange={this.handleInput} value={this.state.input}>
+          <textarea className="deck-builder2-component__input" onChange={this.handleInput} value={this.state.input}>
           </textarea>
         </div>
-        <div className="deck-builder-component__message">
+        <div className="deck-builder2-component__message">
           {this.state.message}
         </div>
   		</div>

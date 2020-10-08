@@ -4,6 +4,8 @@ import { Game } from './views/game/game';
 import { Start } from './views/start/start';
 import { TeamBuilder, getRandomTeam } from './views/teamBuilder/teamBuilder';
 import { DeckBuilder, getRandomDeckList } from './views/deckBuilder/deckBuilder';
+import { DeckBuilder2 } from './views/deckBuilder2/deckBuilder2';
+import { CardViewer } from './views/cardViewer/cardViewer';
 import { CardInstance, getCardInstance, CardSource } from './components/card/card';
 import { ChinpokoData } from './components/chinpoko/chinpoko';
 import { PowerList } from './data/powerList';
@@ -12,7 +14,9 @@ export const enum AppView {
   START,
   DECK,
   TEAM,
-  GAME
+  GAME,
+  DECK2,
+  CARDVIEWER
 }
 
 export function getPowerList(team: {[id: number] : ChinpokoData}) : {[id: number] : CardInstance} {
@@ -35,6 +39,8 @@ interface AppState {
   enemyDeckList: {[id: number] : CardInstance}
   allyPowerList: {[id: number] : CardInstance}
   enemyPowerList: {[id: number] : CardInstance}
+  allyDeck: Array<number>
+  enemyDeck: Array<number>
   view: AppView
   ally: boolean
   antiCheat: boolean
@@ -51,6 +57,8 @@ class App extends React.Component<{}, AppState> {
     let enemyDeckList = getRandomDeckList(30);
     let allyPowerList = getPowerList(allyTeam);
     let enemyPowerList = getPowerList(enemyTeam);
+    let allyDeck = Object.keys(allyDeckList).map(a => Number(a))
+    let enemyDeck = Object.keys(enemyDeckList).map(a => Number(a))
 
     this.state = {
       view: AppView.START,
@@ -58,6 +66,8 @@ class App extends React.Component<{}, AppState> {
       enemyTeam: enemyTeam,
       allyDeckList: allyDeckList,
       enemyDeckList: enemyDeckList,
+      allyDeck: allyDeck,
+      enemyDeck: enemyDeck,
       allyPowerList: allyPowerList,
       enemyPowerList: enemyPowerList,
       ally: true,
@@ -102,6 +112,18 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
+  setDeck = (deck: Array<number>, ally: boolean) => {
+    if(ally) {
+      this.setState({
+        allyDeck: deck
+      })
+    } else {
+      this.setState({
+        enemyDeck: deck
+      })
+    }
+  }
+
   setPowerList = (powerList: {[id: number] : CardInstance}, ally: boolean) => {
     if(ally) {
       this.setState({
@@ -120,6 +142,8 @@ class App extends React.Component<{}, AppState> {
       enemyTeam: state.allyTeam,
       allyDeckList: state.enemyDeckList,
       enemyDeckList: state.allyDeckList,
+      allyDeck: state.enemyDeck,
+      enemyDeck: state.allyDeck,
       allyPowerList: state.enemyPowerList,
       enemyPowerList: state.allyPowerList,
       ally: !state.ally
@@ -179,6 +203,8 @@ class App extends React.Component<{}, AppState> {
           enemyTeam={this.state.enemyTeam}
           allyDeckList={this.state.allyDeckList}
           enemyDeckList={this.state.enemyDeckList}
+          allyDeck={this.state.allyDeck}
+          enemyDeck={this.state.enemyDeck}
           allyPowerList={this.state.allyPowerList}
           enemyPowerList={this.state.enemyPowerList}
           setTeam={this.setTeam}
@@ -188,6 +214,26 @@ class App extends React.Component<{}, AppState> {
           antiCheat={this.state.antiCheat}
           cyborg={this.state.cyborg}
           />
+        );
+
+      case AppView.DECK2:
+        return (
+          <DeckBuilder2
+          changeView={this.changeView}
+          swapPlayers={this.swapPlayers}
+          setDeckList={this.setDeckList}
+          allyDeckList={this.state.allyDeckList}
+          enemyDeckList={this.state.enemyDeckList}
+          allyDeck={this.state.allyDeck}
+          enemyDeck={this.state.enemyDeck}
+          setDeck={this.setDeck}
+          ally={this.state.ally}/>
+        );
+
+      case AppView.CARDVIEWER:
+        return (
+          <CardViewer
+          changeView={this.changeView}/>
         );
     }
 	}

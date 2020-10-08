@@ -37,6 +37,10 @@ export const EffectList: {[name: string] : ActionEffect} = {
 		name: "DEGEN",
 		symbol: "fas fa-skull-crossbones"
 	},
+	"DOT": {
+		name: "DOT",
+		symbol: "fas fa-stopwatch",
+	},
 	"DISCARD": {
 		name: "DISCARD",
 		symbol: "fas fa-trash-restore"
@@ -48,5 +52,9 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"COPYCARD": {
 		name: "COPYCARD",
 		symbol: "far fa-copy"
+	},
+	"LOOK": {
+		name: "LOOK",
+		symbol: "fas fa-eye"
 	}
 };

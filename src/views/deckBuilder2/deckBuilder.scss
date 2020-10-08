@@ -1,9 +1,8 @@
-.deck-builder-component{
-	overflow: auto;
+.deck-builder2-component{
 	
 	&__deck{
 		display: grid;
-		grid-template-columns: repeat(9, 1fr);
+		grid-template-columns: repeat(10, 1fr);
   		grid-gap: 5px;
 	}
 

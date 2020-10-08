@@ -42,6 +42,11 @@ export interface ChinpokoData {
 	speBoost: number
 }
 
+export interface ChinpokoCard {
+	lvl: number
+	card: CardData
+}
+
 export function getRandomChinpoko(): ChinpokoData {
 	let index = Math.floor(Math.random() * ChinpokoList.length);
 	return getChinpokoData(ChinpokoList[index]);
