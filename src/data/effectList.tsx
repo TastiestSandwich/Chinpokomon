@@ -56,5 +56,9 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"LOOK": {
 		name: "LOOK",
 		symbol: "fas fa-eye"
+	},
+	"EMPTY": {
+		name: "EMPTY",
+		symbol: "far fa-circle"
 	}
 };

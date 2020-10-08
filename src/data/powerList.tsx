@@ -225,5 +225,26 @@ export const PowerList: { [name:string] : CardData } = {
         ally: false
       }
     }]
+  },
+  "Pivot": {
+    name: "Pivot",
+    text: "Lets an ally come and fight, but then quickly changes its mind",
+    type: TypeList["NEUTRAL"],
+    actions: [{
+      effect: EffectList["CHANGE"],
+      parameters: {}
+    },{
+      effect: EffectList["EMPTY"],
+      parameters: {}
+    },{
+      effect: EffectList["EMPTY"],
+      parameters: {}
+    },{
+      effect: EffectList["EMPTY"],
+      parameters: {}
+    },{
+      effect: EffectList["CHANGE"],
+      parameters: {}
+    }]
   }
 }
