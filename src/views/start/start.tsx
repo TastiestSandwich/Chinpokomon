@@ -26,6 +26,12 @@ export class Start extends React.Component<StartProps> {
   changeViewToDeck = () => {
     this.props.changeView(AppView.DECK);
   }
+  changeViewToDeck2 = () => {
+    this.props.changeView(AppView.DECK2);
+  }
+  changeViewToCardViewer = () => {
+    this.props.changeView(AppView.CARDVIEWER)
+  }
 
 	render() {
     const playerName : string = this.props.ally ? allyName : rivalName
@@ -47,7 +53,13 @@ export class Start extends React.Component<StartProps> {
           </button>
           <button className="start-component__deck-button" onClick={this.changeViewToDeck}>
             DECK
-           </button>
+          </button>
+          <button className="start-component__deck-button" onClick={this.changeViewToDeck2}>
+            DECK 2
+          </button>
+          <button className="start-component__card-button" onClick={this.changeViewToCardViewer}>
+            CARD VIEWER
+          </button>
          </div>
          <div className="start-component__player-zone">
            <div className="start-component__player-message">

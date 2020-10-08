@@ -78,7 +78,7 @@ export function effectDegen(card: CardData, action: CardAction, ally: ChinpokoDa
 }
 
 export function effectDot(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
-	let dot = calcStatMod(action.parameters.power, card.type, ally, enemy)
+	let dot = calcDamage(action.parameters.power, card.type, ally, enemy)
 	enemy.hpBoost = enemy.hpBoost - dot
 	console.log("Is losing hp!")
 }

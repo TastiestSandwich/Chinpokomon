@@ -1,0 +1,9 @@
+.card-viewer-component{
+	overflow: auto;
+
+	&__deck{
+		display: grid;
+		grid-template-columns: repeat(9, 1fr);
+  		grid-gap: 5px;
+	}
+}

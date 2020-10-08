@@ -395,8 +395,8 @@ export const CardList: { [name:string] : CardData } = {
 			}
 		}]
 	},
-	"Moody mood": {
-		name: "Moody mood",
+	"Moody Mood": {
+		name: "Moody Mood",
 		text: "The user changes in an unpredictable way, dropping a random stat while sharply increasing another",
 		type: TypeList["MISTERY"],
 		actions: [{
@@ -412,6 +412,285 @@ export const CardList: { [name:string] : CardData } = {
 				percentage: 1,
 				stat: "RND",
 				ally: true
+			}
+		}]
+	},
+	"Hydro Pump": {
+		name: "Hydro Pump",
+		text: "Quickly releases a strong stream of water, which needs to be recharged",
+		type: TypeList["WATER"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 75
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Healing Pool": {
+		name: "Clear Water",
+		text: "Surrounds itself with healing water and drinks, enhancing the body and mind",
+		type: TypeList["WATER"],
+		actions: [{
+			effect: EffectList["HEAL"],
+			parameters: {
+				percentage: 0.1 
+			}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				stat: "SPE",
+				percentage: 0.1,
+				ally: true
+			}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				stat: "DEF",
+				percentage: 0.1,
+				ally: true
+			}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				stat: "ATK",
+				percentage: 0.1,
+				ally: true
+			}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				stat: "HP",
+				percentage: 0.1,
+				ally: true
+			}
+		}]
+	},
+	"Demolition": {
+		name: "Demolition",
+		text: "Tears down the enemy like walls and buildings, droppint their defense",
+		type: TypeList["ARTIFICIAL"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 40
+			}
+		},{
+			effect: EffectList["DROP"],
+			parameters: {
+				stat: "DEF",
+				percentage: 0.3,
+				ally: false
+			}
+		}]
+	},
+	"Leech Seed": {
+		name: "Leech Seed",
+		text: "Leeches life from the enemy, degening their health to regen itself",
+		type: TypeList["GRASS"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DEGEN"],
+			parameters: {
+				percentage: 0.1
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["REGEN"],
+			parameters: {
+				percentage: 0.1
+			}
+		}]
+	},
+	"Vine Whip": {
+		name: "Vine Whip",
+		text: "Hits twice with plant-like tentacles",
+		type: TypeList["GRASS"],
+		actions: [{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 25
+			}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 25
+			}
+		}]
+	},
+	"Limb Burn": {
+		name: "Limb Burn",
+		text: "Burns the enemy limbs, dropping their attack and health",
+		type: TypeList["FIRE"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DOT"],
+			parameters: {
+				power: 25
+			}
+		},{
+			effect: EffectList["DROP"],
+			parameters: {
+				stat: "ATK",
+				percentage: 0.25,
+				ally: false
+			}
+		}]
+	},
+	"Ember": {
+		name: "Ember",
+		text: "Small and quick flames are thrown at the enemy",
+		type: TypeList["FIRE"],
+		actions: [{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 50
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Hyper Beam": {
+		name: "Hyper Beam",
+		text: "Releases a massive energy beam that requires enormous energy",
+		type: TypeList["NEUTRAL"],
+		actions: [{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 200
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Sleight of Hand": {
+		name: "Sleight of Hand",
+		text: "Distracts the enemy with a weak hit, allowing the user to draw a card",
+		type: TypeList["NEUTRAL"],
+		actions: [{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 20
+			}
+		},{
+			effect: EffectList["DRAW"],
+			parameters: {
+				number: 1,
+				ally: true
+			}
+		}]
+	},
+	"Concentration": {
+		name: "Concentration",
+		text: "Strong focus allows the trainer to draw two cards",
+		type: TypeList["NEUTRAL"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DRAW"],
+			parameters: {
+				number: 1,
+				ally: true
+			}
+		},{
+			effect: EffectList["DRAW"],
+			parameters: {
+				number: 1,
+				ally: true
+			}
+		}]
+	},
+	"Sneaky Peek": {
+		name: "Sneaky Peek",
+		text: "Stealthy observation lets you look at the enemy's hand",
+		type: TypeList["NEUTRAL"],
+		actions: [{
+			effect: EffectList["LOOK"],
+			parameters: {
+				ally: false
+			}
+		},{
+			effect: EffectList["DRAW"],
+			parameters: {
+				number: 1,
+				ally: true
+			}
+		}]
+	},
+	"Vanish Beam": {
+		name: "Vanish Beam",
+		text: "Damages the enemy with a dark energy beam, vanishing afterwards",
+		type: TypeList["MISTERY"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 80
+			}
+		},{
+			effect: EffectList["CHANGE"],
+			parameters: {}
+		}]
+	},
+	"Baton Pass": {
+		name: "Baton Pass",
+		text: "Lets an ally come, who is then boosted by a misterious energy",
+		type: TypeList["MISTERY"],
+		actions: [{
+			effect: EffectList["CHANGE"],
+			parameters: {}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				stat: "RND",
+				ally: true,
+				percentage: 0.4
 			}
 		}]
 	}
