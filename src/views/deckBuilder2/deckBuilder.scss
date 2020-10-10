@@ -1,19 +1,15 @@
 .deck-builder2-component{
+	overflow: auto;
 	
 	&__deck{
 		display: grid;
-		grid-template-columns: repeat(10, 1fr);
-  		grid-gap: 5px;
+		grid-template-columns: repeat(7, 1fr);
+  		grid-gap: 10px;
 	}
 
-	&__body{
+	&__tab-button-row{
 		display: flex;
-		flex-direction: column;
-	}
-
-	&__input{
-		height: 400px;
-		text-align: left;
-		vertical-align: text-top;
+		flex-direction: row;
+		padding: 5px;
 	}
 }

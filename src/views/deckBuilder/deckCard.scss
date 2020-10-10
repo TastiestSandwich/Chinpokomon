@@ -1,5 +1,5 @@
 $cardFontSize: 14px;
-$cardWidth: 140px;
+$cardWidth: 170px;
 $ratio:1.4;
 $cardBorderSize: 3px;
 
@@ -16,6 +16,11 @@ $cardBorderSize: 3px;
 	border-width: $cardBorderSize;
 	border-style: solid;
 	box-shadow: 0 0 0 0 #CCCCFF;
+	cursor: pointer;
+
+	&--is-not-selected{
+		filter: brightness(70%);
+	}
 
 	&--type{
 		&-FIRE{

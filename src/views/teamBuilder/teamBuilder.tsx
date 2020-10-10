@@ -18,16 +18,16 @@ export interface ChinpokoInputData {
 
 export function getRandomTeam(size: number) {
   let team: {[id: number] : ChinpokoData} = {};
-  for(let i=0; i < size; i++) {
-    team[i] = getRandomChinpoko();
+  for(let i=1; i <= size; i++) {
+    team[i] = getRandomChinpoko(i);
   }
   return team;
 }
 
 function transformInputArrayToTeam(inputArray: Array<ChinpokoInputData>): {[id: number] : ChinpokoData} {
   const team: {[id: number] : ChinpokoData} = {};
-  for(let i=0; i < inputArray.length; i++) {
-    team[i] = getChinpokoData(transformInputToStored(inputArray[i]));
+  for(let i=1; i <= inputArray.length; i++) {
+    team[i] = getChinpokoData(transformInputToStored(inputArray[i]), i);
   }
   return team;
 }

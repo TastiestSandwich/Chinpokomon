@@ -9,7 +9,7 @@ function getCardInstanceList(): {[id: number] : CardInstance} {
   let cardList: {[id: number] : CardInstance} = {}
   let i = 0
   for(let card of Object.values(CardList)) {
-    cardList[i] = getCardInstance(i, card, true, true, CardSource.DECK)
+    cardList[i] = getCardInstance(i, card, true, true, CardSource.DECK, null)
     i++
   }
   return cardList
@@ -23,6 +23,8 @@ export class CardViewer extends React.Component<CardViewerProps> {
   changeViewToStart = () => {
     this.props.changeView(AppView.START);
   }
+
+  handleCardClick = () => () => () => {return}
 
   render(){
     const cardList = getCardInstanceList()
@@ -41,6 +43,8 @@ export class CardViewer extends React.Component<CardViewerProps> {
           <DeckCard
             key={key}
             instance={cardList[key]}
+            isSelected={true}
+            onClick={this.handleCardClick()}
            />
           ))}
         </div>

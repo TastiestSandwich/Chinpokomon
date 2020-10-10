@@ -29,6 +29,7 @@ export interface BaseChinpokoData {
 }
 
 export interface ChinpokoData {
+	id: number
 	storedData: ChinpokoStoredData
 	maxhp: number
 	hp: number
@@ -47,14 +48,15 @@ export interface ChinpokoCard {
 	card: CardData
 }
 
-export function getRandomChinpoko(): ChinpokoData {
+export function getRandomChinpoko(id: number): ChinpokoData {
 	let index = Math.floor(Math.random() * ChinpokoList.length);
-	return getChinpokoData(ChinpokoList[index]);
+	return getChinpokoData(ChinpokoList[index], id);
 }
 
-export function getChinpokoData(storedData: ChinpokoStoredData): ChinpokoData {
+export function getChinpokoData(storedData: ChinpokoStoredData, id: number): ChinpokoData {
 	let startingHP = calcHP(storedData.species.baseHP, storedData.evHP, storedData.lvl);
 	let chinpoko: ChinpokoData = {
+		id: id,
 		storedData: storedData,
 		maxhp: startingHP,
 		hp: startingHP,
@@ -107,14 +109,28 @@ interface ChinpokoProps {
 	ally: boolean
 }
 
+interface ChinpokoSpriteProps {
+	chinpoko: ChinpokoData
+	baseClass: string
+}
+
+export class ChinpokoSprite extends React.Component<ChinpokoSpriteProps> {
+	render() {
+		const species = this.props.chinpoko.storedData.species
+		const baseClass = this.props.baseClass
+		return (
+			<div className={`${baseClass}__sprite`}>
+				<img src={species.sprite} alt={species.speciesName} />
+			</div>
+		)
+	}
+}
+
 export class Chinpoko extends React.Component<ChinpokoProps> {
 
 	renderChinpokoSprite() {
-		const species = this.props.chinpoko.storedData.species
 		return (
-			<div className={`chinpoko-component__sprite`}>
-				<img src={species.sprite} alt={species.speciesName} />
-			</div>
+			<ChinpokoSprite chinpoko={this.props.chinpoko} baseClass="chinpoko-component"/>
 		)
 	}
 

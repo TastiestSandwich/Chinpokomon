@@ -466,7 +466,7 @@ export const CardList: { [name:string] : CardData } = {
 				ally: true
 			}
 		},{
-			effect: EffectList["BOOST"],
+			effect: EffectList["REGEN"],
 			parameters: {
 				stat: "HP",
 				percentage: 0.1,
@@ -476,7 +476,7 @@ export const CardList: { [name:string] : CardData } = {
 	},
 	"Demolition": {
 		name: "Demolition",
-		text: "Tears down the enemy like walls and buildings, droppint their defense",
+		text: "Tears down the enemy, dropping their defense",
 		type: TypeList["ARTIFICIAL"],
 		actions: [{
 			effect: EffectList["WAIT"],

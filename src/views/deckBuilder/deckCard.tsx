@@ -6,6 +6,8 @@ import { TypeSymbol } from '../../components/type/type';
 
 interface DeckCardProps {
 	instance: CardInstance
+	isSelected: boolean
+	onClick: (selected: boolean) => () => void
 }
 
 export class DeckCard extends React.Component<DeckCardProps, {} > {
@@ -14,9 +16,10 @@ export class DeckCard extends React.Component<DeckCardProps, {} > {
 		const instance = this.props.instance;
 		const type = instance.card.type
 		const ccc = "deck-card-component"
+		const selected = this.props.isSelected ? "" : ccc + "--is-not-selected"
 
 		return(
-			<div className={`${ccc} ${ccc}--type-${type.name}`}>
+			<div className={`${ccc} ${ccc}--type-${type.name} ${selected}`} onClick={this.props.onClick(this.props.isSelected)}>
 				<div className={`${ccc}__type`}>
             <TypeSymbol
             type={type}

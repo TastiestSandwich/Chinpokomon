@@ -17,7 +17,7 @@ function transformInputToDeckList(inputArray: Array<string>): {[id: number] : Ca
   const deckList: {[id: number] : CardInstance} = {};
   for(let i=0; i < inputArray.length; i++) {
     const card: CardData = CardList[inputArray[i]];
-    deckList[i] = getCardInstance(i, card, true, false, CardSource.DECK);
+    deckList[i] = getCardInstance(i, card, true, false, CardSource.DECK, null);
   }
   return deckList;
 }
@@ -80,6 +80,8 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
     this.props.changeView(AppView.START);
   }
 
+  handleCardClick = () => () => () => {return}
+
   render(){
     const player = this.props.ally ? "PLAYER 1" : "PLAYER 2";
     const deckList = this.props.allyDeckList;
@@ -106,6 +108,8 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
           <DeckCard
             key={key}
             instance={deckList[key]}
+            isSelected={true}
+            onClick={this.handleCardClick()}
            />
           ))}
         </div>

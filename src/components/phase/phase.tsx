@@ -68,7 +68,7 @@ export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance
 	const indexEnd = indexStart + instance.card.actions.length;
 	for (let i = indexStart; i < indexEnd; i++) {
 		// phase is only empty if it exists and action is null or empty
-		let isEmpty = phases[i] != undefined && (phases[i].action === null || phases[i].action?.effect.name !== "EMPTY")
+		let isEmpty = phases[i] != undefined && (phases[i].action === null || phases[i].action?.effect.name === "EMPTY")
 		if (!isEmpty) {
 			console.log("not enough unfilled phases")
 			return false;

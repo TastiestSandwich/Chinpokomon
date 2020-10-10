@@ -83,8 +83,8 @@ export class Game extends React.Component<GameProps, GameState> {
       enemyDeck: shuffle([...this.props.enemyDeck]),
       allyDiscard: [],
       enemyDiscard: [],
-      allyChinpoko: 0,
-      enemyChinpoko: 0,
+      allyChinpoko: 1,
+      enemyChinpoko: 1,
       selectedCard: null,
       enemySelectedCard: null,
       allyPhases: initPhaseGroupData(Constants.startingPhases),
@@ -480,7 +480,7 @@ export class Game extends React.Component<GameProps, GameState> {
     const allyDeck = ally ? {...this.props.allyDeckList} : {...this.props.enemyDeckList}
     const enemyDeck = ally ? this.props.enemyDeckList : this.props.allyDeckList
     const newId: number = Object.keys(allyDeck).length
-    const card : CardInstance = getCardInstance(newId, enemyDeck[id].card, enemyDeck[id].isRemovable, true, CardSource.DECK)
+    const card : CardInstance = getCardInstance(newId, enemyDeck[id].card, enemyDeck[id].isRemovable, true, CardSource.DECK, null)
     allyDeck[newId] = card
     this.props.setDeckList(allyDeck, ally)
 
