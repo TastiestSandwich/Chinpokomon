@@ -7,15 +7,17 @@ export const Constants = {
   baseHpBoost: 0,
 
   // Phase
-  startingPhases: 5,
+  startingPhases: 2,
+  phasesPerTurn: 1,
+  maxRegularPhases: 5,
   maxStoredPhases: 3,
 
   // Hand and Deck
-  startingHandSize: 5,
+  startingHandSize: 4,
   startingDeckSize: 30,
 
-  maxChinpokos: 4,
-  maxCardsFromChinpoko: 6,
+  maxChinpokos: 5,
+  maxCardsFromChinpoko: 5,
 
   allyName: "COFFEE BOI",
   rivalName: "ASLO",

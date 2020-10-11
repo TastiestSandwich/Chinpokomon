@@ -4,7 +4,7 @@ import './game.scss';
 import { CardInstance, shuffle, CardSource, getCardInstance } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData, getChinpokoSpe } from '../../components/chinpoko/chinpoko';
-import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
+import { getPhaseGroupAmount, PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
 import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop, effectRegen, effectDegen, applyHpBoost, effectDot } from '../../components/engine/engine';
 import { CardAction } from '../../components/action/action';
 import Power from '../../components/power/power';
@@ -69,6 +69,7 @@ export interface GameState {
   modalAlly: boolean
   modalType: ModalType
   cyborgClicked: boolean
+  turn: number
 }
 
 export class Game extends React.Component<GameProps, GameState> {
@@ -77,8 +78,6 @@ export class Game extends React.Component<GameProps, GameState> {
     this.state = {
       allyHand: [],
       enemyHand: [],
-      // allyDeck: shuffle(Object.keys(this.props.allyDeckList).map(i => Number(i))),
-      // enemyDeck: shuffle(Object.keys(this.props.enemyDeckList).map(i => Number(i))),
       allyDeck: shuffle([...this.props.allyDeck]),
       enemyDeck: shuffle([...this.props.enemyDeck]),
       allyDiscard: [],
@@ -98,7 +97,8 @@ export class Game extends React.Component<GameProps, GameState> {
       currentPhase: null,
       modalAlly: true,
       modalType: ModalType.CHANGE_CHINPOKO,
-      cyborgClicked: false
+      cyborgClicked: false,
+      turn: 1
     };
   }
 
@@ -289,7 +289,7 @@ export class Game extends React.Component<GameProps, GameState> {
       })
       this.solveNextPhase(phaseCounters, phaseLimit, allyChinpoko, enemyChinpoko);
       this.updateTeams(allyChinpoko, enemyChinpoko);
-      this.stateBasedActions(allyChinpoko, enemyChinpoko);
+      this.stateBasedActions(phaseCounters, allyChinpoko, enemyChinpoko);
       this.setState({
         phaseCounters: phaseCounters
       });
@@ -301,7 +301,7 @@ export class Game extends React.Component<GameProps, GameState> {
       if(phaseCounters.length > 0) {
         this.solveNextPhase(phaseCounters, this.state.phaseLimit, allyChinpoko, enemyChinpoko);
         this.updateTeams(allyChinpoko, enemyChinpoko);
-        this.stateBasedActions(allyChinpoko, enemyChinpoko);
+        this.stateBasedActions(phaseCounters, allyChinpoko, enemyChinpoko);
         this.setState({
           phaseCounters: phaseCounters,
         });
@@ -312,14 +312,15 @@ export class Game extends React.Component<GameProps, GameState> {
         this.drawCards(false, 1);
         this.setState((state) => ({
           stage: GameStage.PLAY,
-          allyPhases: initPhaseGroupData(Constants.startingPhases + state.allyStoredPhases),
-          enemyPhases: initPhaseGroupData(Constants.startingPhases + state.enemyStoredPhases),
+          allyPhases: initPhaseGroupData(getPhaseGroupAmount(state.turn + 1, state.allyStoredPhases)),
+          enemyPhases: initPhaseGroupData(getPhaseGroupAmount(state.turn + 1, state.enemyStoredPhases)),
           allyStoredPhases: 0,
           enemyStoredPhases: 0,
           currentPhase: null,
-          cyborgClicked: false
+          cyborgClicked: false,
+          turn: state.turn + 1
         }))
-        this.stateBasedActions(allyChinpoko, enemyChinpoko);
+        this.stateBasedActions(phaseCounters, allyChinpoko, enemyChinpoko);
       }
     }
   }
@@ -338,12 +339,12 @@ export class Game extends React.Component<GameProps, GameState> {
     this.props.setTeam(enemyTeam, false);
   }
 
-  stateBasedActions(allyChinpoko: ChinpokoData, enemyChinpoko: ChinpokoData) {
+  stateBasedActions(phaseCounters: Array<PhaseCounter>, allyChinpoko: ChinpokoData, enemyChinpoko: ChinpokoData) {
     if(allyChinpoko.hp <= 0) {
-      this.handleChinpokoDeath(allyChinpoko, true)
+      this.handleChinpokoDeath(phaseCounters, allyChinpoko, true)
     }
     if(enemyChinpoko.hp <= 0) {
-      this.handleChinpokoDeath(enemyChinpoko, false)
+      this.handleChinpokoDeath(phaseCounters, enemyChinpoko, false)
     }
     if(this.getNumberOfAliveChinpokos(this.props.allyTeam) <= 0) {
       console.log("GAME OVER, ENEMY WINS");
@@ -359,9 +360,26 @@ export class Game extends React.Component<GameProps, GameState> {
     }
   }
 
-  handleChinpokoDeath(chinpoko: ChinpokoData, ally: boolean) {
+  handleChinpokoDeath(phaseCounters: Array<PhaseCounter>, chinpoko: ChinpokoData, ally: boolean) {
     console.log("RIP " + chinpoko.storedData.name);
+    this.emptyRemainingPhases(phaseCounters)
     this.effectChangeModal(ally);
+  }
+
+  emptyRemainingPhases(phaseCounters: Array<PhaseCounter>) {
+    for(let phaseCounter of phaseCounters) {
+      while(phaseCounter.remainingPhases.length > 0) {
+        let phase: PhaseData | undefined = phaseCounter.remainingPhases.shift()
+
+        if (phase != undefined) {
+          this.unfillPhase(phaseCounter.isAlly, phase)
+          if(phase.instance && phase.isEnd) {
+            this.discardCardIfAble(phase.instance, phaseCounter.isAlly)
+          }
+        }
+      }
+    }
+    phaseCounters.splice(0, phaseCounters.length)
   }
 
   getNumberOfAliveChinpokos(team: {[id: number] : ChinpokoData}) : number {
@@ -715,11 +733,11 @@ export class Game extends React.Component<GameProps, GameState> {
           { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} cyborg={this.props.cyborg}/> }
           { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} cyborgClick={cyborgClick}/> }
           { <PhaseGroup phases={this.state.enemyPhases} ally={false} stage={stage} currentPhase={this.state.currentPhase} 
-            antiCheat={this.props.antiCheat} /> }
+            antiCheat={this.props.antiCheat} turn={this.state.turn}/> }
           { <PhaseGroup phases={this.state.allyPhases} ally={true} stage={stage} currentPhase={this.state.currentPhase}
             onPhaseClick={this.handlePhaseClick}
             onPhaseDelete={this.deletePhaseClick}
-            antiCheat={this.props.antiCheat} /> }
+            antiCheat={this.props.antiCheat} turn={this.state.turn}/> }
           <div className="game-component__selected">
            { this.state.selectedCard &&
             <SelectedCard instance={this.state.selectedCard} deleteCardClick={this.deleteCardClick} stage={this.state.stage}/> }

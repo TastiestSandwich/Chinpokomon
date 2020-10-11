@@ -39,6 +39,16 @@ export function findHighestIndexOverLimit(phaseCounters: Array<PhaseCounter>, li
 	return index;
 }
 
+export function getPhaseGroupAmount(turn: number, storedPhases: number): number {
+	let regularPhases: number = getPhaseGroupRegularAmount(turn)
+	return regularPhases + storedPhases
+}
+
+function getPhaseGroupRegularAmount(turn: number): number {
+	let regularPhases: number = Constants.startingPhases + (turn - 1) * Constants.phasesPerTurn
+	return regularPhases > Constants.maxRegularPhases ? Constants.maxRegularPhases : regularPhases
+}
+
 export function initPhaseGroupData(size: number): Array<PhaseData> {
 	let phaseGroup: Array<PhaseData> = new Array<PhaseData>();
 	for (let i = 0; i < size; i++) {
@@ -124,6 +134,7 @@ interface PhaseGroupProps {
 	stage: GameStage
 	currentPhase: CurrentPhase | null
 	antiCheat: boolean
+	turn: number
 	onPhaseClick?: (phaseNumber: number) => void
 	onPhaseDelete?: (phaseNumber: number, instance: CardInstance | null) => void
 }
@@ -174,6 +185,7 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, PhaseGroupState
 					onPhaseDelete={this.handleDelete(index+1, phase.instance)}
 					groupHover={this.state.hover}
 					antiCheat={this.props.antiCheat}
+					turn={this.props.turn}
 				   />
 				  ))}
 			</div>
@@ -198,6 +210,7 @@ interface PhaseProps {
 	currentPhase: CurrentPhase | null
 	groupHover: boolean
 	antiCheat: boolean
+	turn: number
 	onPhaseClick?: () => void
 	onPhaseDelete?: () => void
 }
@@ -205,7 +218,7 @@ interface PhaseProps {
 export class Phase extends React.Component<PhaseProps, {}> {
 
 	render() {
-		const { phase, ally, stage, currentPhase, onPhaseClick, onPhaseDelete } = this.props;
+		const { phase, ally, stage, currentPhase, onPhaseClick, onPhaseDelete, turn } = this.props;
 
 		let isCurrent = false;
 		if (currentPhase != null) {
@@ -221,7 +234,7 @@ export class Phase extends React.Component<PhaseProps, {}> {
 		const showCondition = phase.show || ( ally && stage === GameStage.PLAY && showByAntiCheat )
 		const showClass = phase.show ? "is-show" : ""
 
-		const extraClass = phase.index > Constants.startingPhases ? "is-extra" : ""
+		const extraClass = phase.index > getPhaseGroupRegularAmount(turn) ? "is-extra" : ""
 
 		if(!showCondition) {
 			return (
