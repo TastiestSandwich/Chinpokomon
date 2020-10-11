@@ -1,91 +1,103 @@
 import React from 'react';
 import './deckBuilder.scss';
 import { AppView } from '../../app';
-import { CardInstance, getRandomCardInstance, getCardInstance, CardData, CardSource } from '../../components/card/card';
-import { CardList } from '../../data/cardList';
-import { DeckCard } from './deckCard';
-
-export function getRandomDeckList(size: number) {
-  let deckList: {[id: number] : CardInstance} = {};
-  for(let i=0; i < size; i++) {
-    deckList[i] = getRandomCardInstance(i);
-  }
-  return deckList;
-}
-
-function transformInputToDeckList(inputArray: Array<string>): {[id: number] : CardInstance} {
-  const deckList: {[id: number] : CardInstance} = {};
-  for(let i=0; i < inputArray.length; i++) {
-    const card: CardData = CardList[inputArray[i]];
-    deckList[i] = getCardInstance(i, card, true, false, CardSource.DECK, null);
-  }
-  return deckList;
-}
-
-function transformDeckListToInput(deckList: {[id: number] : CardInstance}) {
-  const input: Array<String> = [];
-  for(let instance of Object.values(deckList)) {
-    input.push( instance.card.name );
-  }
-  return input;
-}
+import { CardInstance } from '../../components/card/card';
+import { ChinpokoData } from '../../components/chinpoko/chinpoko'
+import { DeckCard } from '../deckBuilder/deckCard';
+import { TabButton } from './tabButton'
+import { Constants } from '../../data/const'
+import { Sprite } from '../../components/sprite/sprite';
+import aslophd from '../../images/aslophd.png';
+import coffeeboi from '../../images/coffeeboi.png';
+import deck from '../../images/deck.png';
 
 interface DeckBuilderProps {
   changeView: (view: AppView) => void
   setDeckList: (deckList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
   allyDeckList: {[id: number] : CardInstance}
-  enemyDeckList: {[id: number] : CardInstance}
+  allyTeam: {[id: number] : ChinpokoData}
   ally: boolean
+  allyDeck: Array<number>
+  setDeck: (deck: Array<number>, ally: boolean) => void
 }
 
 interface DeckBuilderState {
-  message: string
-  input: string
+  selectedTab: number
 }
 
 export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderState> {
   constructor(props) {
     super(props);
     this.state = {
-      message: "",
-      input: JSON.stringify( transformDeckListToInput(this.props.allyDeckList) ),
+      selectedTab: -1
     }
   }
 
   handleChangePlayer = () => {
-    const deckList = this.props.enemyDeckList;
-    this.setState(prevState => ({
-      input: JSON.stringify( transformDeckListToInput(deckList) )
-    }));
     this.props.swapPlayers();
-  }
-
-  handleInput = (event) => {
-    this.setState({
-      input: event.target.value,
-      message: ""
-    })
-  }
-
-  handleSubmit = () => {
-    const input = JSON.parse(this.state.input);
-    this.props.setDeckList( transformInputToDeckList(input), true );
-    this.setState({
-      message: "Deck submitted successfully!"
-    })
   }
 
   changeViewToStart = () => {
     this.props.changeView(AppView.START);
   }
 
-  handleCardClick = () => () => () => {return}
+  handleChangeTab = (tab: number) => () => {
+    this.setState({
+      selectedTab: tab
+    })
+  }
+
+  handleCardClick = (id: number, isMaxAmount: boolean) => (selected: boolean) => () => {
+    let deck: Array<number>
+    console.log("id " + id)
+    console.log("isMaxAmount " + isMaxAmount)
+    console.log("selected " + selected)
+    if(selected) {
+      deck = this.props.allyDeck.filter(cardId => cardId != id)
+    } else if(!isMaxAmount) {
+      deck = this.props.allyDeck
+      deck.push(id)
+    } else {
+      return
+    }
+    this.props.setDeck(deck, true)
+  }
+
+  getAmountSelected(tab: number){
+    let amount = this.props.allyDeck.map(id => this.props.allyDeckList[id]).filter(card => card.chinpokoId === tab).length
+    return amount;
+  }
+
+  renderTab(tab: number){
+    let instances: Array<CardInstance> = []
+    if(tab === -1) {
+      instances = this.props.allyDeck.map(id => this.props.allyDeckList[id])
+    } else {
+      instances = Object.values(this.props.allyDeckList).filter(card => card.chinpokoId === tab)
+    }
+
+    let isMaxAmount: boolean = this.getAmountSelected(tab) >= Constants.maxCardsFromChinpoko
+    console.log(this.getAmountSelected(tab))
+
+    return (
+      <div className="deck-builder-component__deck">
+      { instances.map((card) => (
+        <DeckCard
+          key={card.id}
+          instance={card}
+          isSelected={this.props.allyDeck.includes(card.id)}
+          onClick={this.handleCardClick(card.id, isMaxAmount) }
+         />
+        ))}
+     </div>
+    )
+  }
 
   render(){
-    const player = this.props.ally ? "PLAYER 1" : "PLAYER 2";
-    const deckList = this.props.allyDeckList;
-    const cardKeys = Object.keys(deckList);
+    const player = this.props.ally ? Constants.allyName : Constants.rivalName;
+    const playerSprite = this.props.ally ? coffeeboi : aslophd
+    const chinpokoKeys = Object.keys(this.props.allyTeam)
 
   	return (
   		<div className="deck-builder-component">
@@ -103,26 +115,38 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
             CHANGE PLAYER
           </button>
         </div>
-        <div className="deck-builder-component__deck">
-          { cardKeys.map((key) => (
-          <DeckCard
-            key={key}
-            instance={deckList[key]}
-            isSelected={true}
-            onClick={this.handleCardClick()}
-           />
-          ))}
+        <div className="deck-builder-component__tab-button-row">
+          <TabButton onClick={this.handleChangeTab(-1)} isClicked={-1 === this.state.selectedTab}
+           amountSelected={this.props.allyDeck.length} maxAmount={Constants.maxCardsFromChinpoko * (1 + chinpokoKeys.length)}>
+            <div className="deck-builder-component__tab-button-title">
+              <div className="deck-builder-component__tab-button-title">
+              <Sprite 
+               sprite={deck} 
+               altText="My Deck"
+               baseClass="tab-button-component"/>
+            </div>
+            </div>
+          </TabButton>
+          <TabButton onClick={this.handleChangeTab(0)} isClicked={0 === this.state.selectedTab}
+            amountSelected={this.getAmountSelected(0)} maxAmount={Constants.maxCardsFromChinpoko}>
+            <div className="deck-builder-component__tab-button-title">
+              <Sprite 
+               sprite={playerSprite} 
+               altText={player}
+               baseClass="tab-button-component"/>
+            </div>
+          </TabButton>
+          { chinpokoKeys.map((key) => (
+            <TabButton onClick={this.handleChangeTab(Number(key))} isClicked={Number(key) === this.state.selectedTab}
+            amountSelected={this.getAmountSelected(Number(key))} maxAmount={Constants.maxCardsFromChinpoko}>
+              <Sprite 
+               sprite={this.props.allyTeam[key].storedData.species.sprite} 
+               altText={this.props.allyTeam[key].storedData.species.speciesName}
+               baseClass="tab-button-component"/>
+            </TabButton>
+            ))}
         </div>
-        <div className="deck-builder-component__body">
-          <button className="deck-builder-component__submit-button" onClick={this.handleSubmit}>
-            SUBMIT
-          </button>
-          <textarea className="deck-builder-component__input" onChange={this.handleInput} value={this.state.input}>
-          </textarea>
-        </div>
-        <div className="deck-builder-component__message">
-          {this.state.message}
-        </div>
+        { this.renderTab(this.state.selectedTab) }
   		</div>
 	  )
   }

@@ -1,0 +1,26 @@
+.tab-button-component{
+  display: flex;
+  flex-direction: column;
+	margin: 5px;
+	border-width: 2px;
+	border-style: solid;
+	box-shadow: 0 0 0 0 #CCCCFF;
+	height: 100%;
+  filter: brightness(75%);
+
+	&__sprite{
+      height: 150px;
+      width: 150px;
+	}
+
+  &__card-count{
+    background-color: white;
+    border-width: 2px;
+    border-top: solid;
+    text-align: center;
+  }
+
+  &--is-clicked{
+    filter: brightness(100%);
+  }
+}

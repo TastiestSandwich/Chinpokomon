@@ -2,6 +2,7 @@ import React from 'react';
 import { AppView } from '../../app';
 import './start.scss';
 import '../../root.scss';
+import { Constants } from '../../data/const';
 
 interface StartProps {
   changeView: (view: AppView) => void
@@ -13,9 +14,6 @@ interface StartProps {
   toggleCyborg: () => void
 }
 
-const allyName = "COFFEE BOI"
-const rivalName = "ASLO"
-
 export class Start extends React.Component<StartProps> {
   changeViewToGame = () => {
     this.props.changeView(AppView.GAME);
@@ -26,16 +24,13 @@ export class Start extends React.Component<StartProps> {
   changeViewToDeck = () => {
     this.props.changeView(AppView.DECK);
   }
-  changeViewToDeck2 = () => {
-    this.props.changeView(AppView.DECK2);
-  }
   changeViewToCardViewer = () => {
     this.props.changeView(AppView.CARDVIEWER)
   }
 
 	render() {
-    const playerName : string = this.props.ally ? allyName : rivalName
-    const otherName : string = this.props.ally ? rivalName : allyName
+    const playerName : string = this.props.ally ? Constants.allyName : Constants.rivalName
+    const otherName : string = this.props.ally ? Constants.rivalName : Constants.allyName
     const playerString : string = "YOU ARE " + playerName
     const swapString : string = "CHANGE TO " + otherName
 
@@ -53,9 +48,6 @@ export class Start extends React.Component<StartProps> {
           </button>
           <button className="start-component__deck-button" onClick={this.changeViewToDeck}>
             DECK
-          </button>
-          <button className="start-component__deck-button" onClick={this.changeViewToDeck2}>
-            DECK 2
           </button>
           <button className="start-component__card-button" onClick={this.changeViewToCardViewer}>
             CARD VIEWER

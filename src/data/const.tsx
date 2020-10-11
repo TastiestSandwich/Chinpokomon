@@ -13,4 +13,10 @@ export const Constants = {
   // Hand and Deck
   startingHandSize: 5,
   startingDeckSize: 30,
+
+  maxChinpokos: 4,
+  maxCardsFromChinpoko: 6,
+
+  allyName: "COFFEE BOI",
+  rivalName: "ASLO",
 }

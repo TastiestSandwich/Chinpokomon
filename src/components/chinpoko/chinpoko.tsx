@@ -6,6 +6,7 @@ import { ChinpokoList } from '../../data/chinpokoList';
 import { CardData } from '../card/card';
 import { roundTo, getNumberColorClass } from '../../util';
 import { Constants } from '../../data/const';
+import { Sprite } from '../sprite/sprite';
 
 export interface ChinpokoStoredData {
 	name: string
@@ -109,28 +110,14 @@ interface ChinpokoProps {
 	ally: boolean
 }
 
-interface ChinpokoSpriteProps {
-	chinpoko: ChinpokoData
-	baseClass: string
-}
-
-export class ChinpokoSprite extends React.Component<ChinpokoSpriteProps> {
-	render() {
-		const species = this.props.chinpoko.storedData.species
-		const baseClass = this.props.baseClass
-		return (
-			<div className={`${baseClass}__sprite`}>
-				<img src={species.sprite} alt={species.speciesName} />
-			</div>
-		)
-	}
-}
-
 export class Chinpoko extends React.Component<ChinpokoProps> {
 
 	renderChinpokoSprite() {
 		return (
-			<ChinpokoSprite chinpoko={this.props.chinpoko} baseClass="chinpoko-component"/>
+			<Sprite 
+			sprite={this.props.chinpoko.storedData.species.sprite}
+			altText={this.props.chinpoko.storedData.species.speciesName}
+			baseClass="chinpoko-component"/>
 		)
 	}
 

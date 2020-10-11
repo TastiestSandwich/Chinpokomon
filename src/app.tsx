@@ -3,20 +3,19 @@ import { render } from 'react-dom';
 import { Game } from './views/game/game';
 import { Start } from './views/start/start';
 import { TeamBuilder, getRandomTeam } from './views/teamBuilder/teamBuilder';
-import { DeckBuilder, getRandomDeckList } from './views/deckBuilder/deckBuilder';
-import { DeckBuilder2 } from './views/deckBuilder2/deckBuilder2';
+import { DeckBuilder } from './views/deckBuilder/deckBuilder';
 import { CardViewer } from './views/cardViewer/cardViewer';
 import { CardInstance, getCardInstance, CardSource } from './components/card/card';
 import { ChinpokoData } from './components/chinpoko/chinpoko';
 import { PowerList } from './data/powerList';
 import { ChinpokoCardList } from './data/chinpokoCardList'
+import { Constants } from './data/const';
 
 export const enum AppView {
   START,
   DECK,
   TEAM,
   GAME,
-  DECK2,
   CARDVIEWER
 }
 
@@ -53,6 +52,29 @@ export function getDeckList(team: {[id: number] : ChinpokoData}) : {[id: number]
   return deckList
 }
 
+export function getRandomDeck(deckList: {[id: number] : CardInstance}, team: {[id: number] : ChinpokoData}) : Array<number> {
+  const len = Constants.maxCardsFromChinpoko
+  const randomDeck: Array<number> = []
+
+  let trainerCards: Array<number> = Object.values(deckList).filter(card => card.chinpokoId === 0).map(card => card.id)
+  for(let i = 0; i < len; i++) {
+    let randomIndex = Math.floor(Math.random() * trainerCards.length)
+    randomDeck.push(trainerCards[randomIndex])
+    trainerCards.splice(randomIndex, 1)
+  }
+
+  for(let chinpokoId of Object.keys(team)) {
+    let chinpokoCards: Array<number> = Object.values(deckList).filter(card => card.chinpokoId === Number(chinpokoId)).map(card => card.id)
+    for(let i = 0; i < len; i++) {
+      let randomIndex = Math.floor(Math.random() * chinpokoCards.length)
+      randomDeck.push(chinpokoCards[randomIndex])
+      chinpokoCards.splice(randomIndex, 1)
+    }
+  }
+
+  return randomDeck
+}
+
 interface AppState {
   allyTeam: {[id: number] : ChinpokoData}
   enemyTeam: {[id: number] : ChinpokoData}
@@ -74,16 +96,12 @@ class App extends React.Component<{}, AppState> {
 
     let allyTeam = getRandomTeam(4);
     let enemyTeam = getRandomTeam(4);
-    //let allyDeckList = getRandomDeckList(30);
-    //let enemyDeckList = getRandomDeckList(30);
     let allyDeckList = getDeckList(allyTeam)
     let enemyDeckList = getDeckList(enemyTeam)
-    let allyPowerList = getPowerList(allyTeam);
-    let enemyPowerList = getPowerList(enemyTeam);
-    //let allyDeck = Object.keys(allyDeckList).map(a => Number(a))
-    //let enemyDeck = Object.keys(enemyDeckList).map(a => Number(a))
-    let allyDeck = []
-    let enemyDeck = []
+    let allyPowerList = getPowerList(allyTeam)
+    let enemyPowerList = getPowerList(enemyTeam)
+    let allyDeck = getRandomDeck(allyDeckList, allyTeam)
+    let enemyDeck = getRandomDeck(enemyDeckList, enemyTeam)
 
     this.state = {
       view: AppView.START,
@@ -198,17 +216,6 @@ class App extends React.Component<{}, AppState> {
           />
         );
 
-      case AppView.DECK:
-        return (
-          <DeckBuilder 
-          changeView={this.changeView}
-          swapPlayers={this.swapPlayers}
-          setDeckList={this.setDeckList}
-          allyDeckList={this.state.allyDeckList}
-          enemyDeckList={this.state.enemyDeckList}
-          ally={this.state.ally}/>
-        );
-
       case AppView.TEAM:
         return (
           <TeamBuilder 
@@ -241,9 +248,9 @@ class App extends React.Component<{}, AppState> {
           />
         );
 
-      case AppView.DECK2:
+      case AppView.DECK:
         return (
-          <DeckBuilder2
+          <DeckBuilder
           changeView={this.changeView}
           swapPlayers={this.swapPlayers}
           setDeckList={this.setDeckList}
