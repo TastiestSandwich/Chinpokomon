@@ -19,7 +19,7 @@
 
 .phase {
 	background-color: lightgrey;
-	width: 50%;
+	width: 100px;
 	display: flex;
 	position: relative;
 }

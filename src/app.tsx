@@ -94,8 +94,8 @@ class App extends React.Component<{}, AppState> {
   constructor(props) {
     super(props);
 
-    let allyTeam = getRandomTeam(4);
-    let enemyTeam = getRandomTeam(4);
+    let allyTeam = getRandomTeam(Constants.maxChinpokos);
+    let enemyTeam = getRandomTeam(Constants.maxChinpokos);
     let allyDeckList = getDeckList(allyTeam)
     let enemyDeckList = getDeckList(enemyTeam)
     let allyPowerList = getPowerList(allyTeam)

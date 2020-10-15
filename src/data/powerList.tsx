@@ -246,5 +246,17 @@ export const PowerList: { [name:string] : CardData } = {
       effect: EffectList["CHANGE"],
       parameters: {}
     }]
+  },
+  "Electrify": {
+    name: "Electrify",
+    text: "Charges with static electricity, electrifying an attack",
+    type: TypeList["ELECTRIC"],
+    actions: [{
+      effect: EffectList["TYPESWAP"],
+      parameters: {
+        ally: true,
+        type: TypeList["ELECTRIC"]
+      }
+    }]
   }
 }

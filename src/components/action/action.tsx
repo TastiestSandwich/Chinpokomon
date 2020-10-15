@@ -1,5 +1,6 @@
 import React from 'react';
 import './actionSymbol.scss';
+import { Type } from '../type/type';
 
 export interface CardAction {
   effect: ActionEffect
@@ -17,6 +18,7 @@ export interface ActionParameters {
   stat?: string
   ally?: boolean
   number?: number
+  type?: Type
 }
 
 interface ActionSymbolProps {

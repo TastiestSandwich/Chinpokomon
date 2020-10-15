@@ -7,8 +7,8 @@ export const Constants = {
   baseHpBoost: 0,
 
   // Phase
-  startingPhases: 2,
-  phasesPerTurn: 1,
+  startingPhases: 5,
+  phasesPerTurn: 0,
   maxRegularPhases: 5,
   maxStoredPhases: 3,
 

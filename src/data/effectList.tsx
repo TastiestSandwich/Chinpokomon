@@ -60,5 +60,9 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"EMPTY": {
 		name: "EMPTY",
 		symbol: "far fa-circle"
+	},
+	"TYPESWAP": {
+		name: "TYPESWAP",
+		symbol: "fas fa-retweet"
 	}
 };

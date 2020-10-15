@@ -16,7 +16,15 @@
     width: 80%; /* Could be more or less, depending on screen size */
   }
   &__modal-header{
+    display: flex;
+    flex-direction: row;
+  }
 
+  &__modal-close{
+    cursor: pointer;
+    margin-left: auto;
+    height: 50px;
+    width: 50px;
   }
   &__modal-content{
     
@@ -24,12 +32,14 @@
 }
 
 .change-chinpoko-team-component{
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 5px;
   justify-content: center;
   width: 100%;
   &__empty-box{
     background-color: gray;
-    margin: 20px;
+    margin: 5px;
     height: 150px;
     width: 300px;
   }
