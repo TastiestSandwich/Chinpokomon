@@ -59,6 +59,13 @@ function evaluateCard(card: CardInstance, cyborgChinpoko: ChinpokoData, playerCh
       let adjustedPower: number = getAdjustedPower(action.parameters.power, card.card.type, cyborgChinpoko, playerChinpoko)
       evaluation.adjustedPower = evaluation.adjustedPower + adjustedPower
     }
+    if (action.parameters.percentage) {
+      let adjustedPercentage: number = getAdjustedPower(action.parameters.percentage, card.card.type, cyborgChinpoko, playerChinpoko)
+      evaluation.adjustedPower = evaluation.adjustedPower + adjustedPercentage * 10
+    }
+    if (action.effect.name != "WAIT") {
+      evaluation.adjustedPower = evaluation.adjustedPower + 1
+    }
   }
   console.log("card " + card.card.name + " has adjustedPower " + evaluation.adjustedPower)
   return evaluation

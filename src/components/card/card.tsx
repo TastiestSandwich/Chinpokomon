@@ -36,6 +36,14 @@ export interface CardData {
   actions: Array<CardAction>
 }
 
+export function getNumberOfDiscardableCards(hand: Array<number>, deckList: {[id: number] : CardInstance}): number {
+	return hand.map(a => deckList[a]).filter(card => isCardDiscardable(card)).length
+}
+
+export function isCardDiscardable(card: CardInstance): boolean {
+	return !card.isClicked && card.isRemovable
+}
+
 function getRandomCard() {
 	let index = Math.floor(Math.random() * Object.values(CardList).length);
 	return Object.values(CardList)[index];

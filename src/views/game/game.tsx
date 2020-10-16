@@ -1,9 +1,9 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import { CardInstance, shuffle, CardSource, getCardInstance } from '../../components/card/card';
+import { CardInstance, shuffle, CardSource, getCardInstance, getNumberOfDiscardableCards } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
-import { Chinpoko, ChinpokoData, getChinpokoSpe } from '../../components/chinpoko/chinpoko';
+import { Chinpoko, ChinpokoData, getChinpokoSpe, getNumberOfAliveChinpokos } from '../../components/chinpoko/chinpoko';
 import { getPhaseGroupAmount, PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
 import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop, effectRegen, effectDegen, applyHpBoost, effectDot } from '../../components/engine/engine';
 import { CardAction } from '../../components/action/action';
@@ -335,13 +335,13 @@ export class Game extends React.Component<GameProps, GameState> {
     if(enemyChinpoko.hp <= 0) {
       this.handleChinpokoDeath(phaseCounters, enemyChinpoko, false)
     }
-    if(this.getNumberOfAliveChinpokos(this.props.allyTeam) <= 0) {
+    if(getNumberOfAliveChinpokos(this.props.allyTeam) <= 0) {
       console.log("GAME OVER, ENEMY WINS");
       this.setState({
         stage: GameStage.GAMEOVER
       })
     }
-    if(this.getNumberOfAliveChinpokos(this.props.enemyTeam) <= 0) {
+    if(getNumberOfAliveChinpokos(this.props.enemyTeam) <= 0) {
       console.log("GAME OVER, ALLY WINS");
       this.setState({
         stage: GameStage.GAMEOVER
@@ -369,16 +369,6 @@ export class Game extends React.Component<GameProps, GameState> {
       }
     }
     phaseCounters.splice(0, phaseCounters.length)
-  }
-
-  getNumberOfAliveChinpokos(team: {[id: number] : ChinpokoData}) : number {
-    let aliveChinpokos : number = 0
-    for(let index of Object.keys(team)) {
-      if (team[Number(index)].hp > 0) {
-        aliveChinpokos = aliveChinpokos + 1
-      }
-    }
-    return aliveChinpokos
   }
 
   randomChange(ally: boolean): boolean {
@@ -415,6 +405,12 @@ export class Game extends React.Component<GameProps, GameState> {
     if (this.props.cyborg && !ally) {
       this.randomChange(false)
     } else {
+      // if current chinpoko is alive and only 1 chinpoko alive, cant change
+      const team = ally ? this.props.allyTeam : this.props.enemyTeam
+      const chinpoko = ally ? team[this.state.allyChinpoko] : team[this.state.enemyChinpoko]
+      if (chinpoko.hp > 0 && getNumberOfAliveChinpokos(team) <= 1) {
+        return
+      }
       this.setState((state) => ({
         stage: GameStage.MODAL,
         previousStage: state.stage,
@@ -422,8 +418,7 @@ export class Game extends React.Component<GameProps, GameState> {
           ally: ally,
           type: ModalType.CHINPOKO,
           title: "CHOOSE CHINPOKO TO CHANGE",
-          onClick: this.handleChangeChinpokoClick,
-          onClose: this.handleModalClose
+          onClick: this.handleChangeChinpokoClick
         }
       }))
     }
@@ -457,6 +452,12 @@ export class Game extends React.Component<GameProps, GameState> {
     if (this.props.cyborg && !ally) {
       // TODO: MAKE CYBORG DISCARD
     } else {
+      // cant discard card when no discardable cards in hand
+      const cardAmount = ally ? getNumberOfDiscardableCards(this.state.allyHand, this.props.allyDeckList)
+                              : getNumberOfDiscardableCards(this.state.enemyHand, this.props.enemyDeckList)
+      if (cardAmount <= 0) {
+        return
+      }
       this.setState((state) => ({
         stage: GameStage.MODAL,
         previousStage: state.stage,
@@ -464,8 +465,7 @@ export class Game extends React.Component<GameProps, GameState> {
           ally: ally,
           type: ModalType.HAND,
           title: "CHOOSE CARD TO DISCARD",
-          onClick: this.handleDiscardClick,
-          onClose: this.handleModalClose
+          onClick: this.handleDiscardClick
         }
       }))
     }
@@ -485,6 +485,12 @@ export class Game extends React.Component<GameProps, GameState> {
     if (this.props.cyborg && ally) {
       // TODO: MAKE CYBORG CHOOSE COPY
     } else {
+      // cant copy card when no copiable (discardable) cards in hand
+      const cardAmount = ally ? getNumberOfDiscardableCards(this.state.allyHand, this.props.allyDeckList)
+                              : getNumberOfDiscardableCards(this.state.enemyHand, this.props.enemyDeckList)
+      if (cardAmount <= 0) {
+        return
+      }
       this.setState((state) => ({
         stage: GameStage.MODAL,
         previousStage: state.stage,
@@ -688,7 +694,7 @@ export class Game extends React.Component<GameProps, GameState> {
 
   renderInfo(ally: boolean) {
     const totalChinpokos = ally ? Object.keys(this.props.allyTeam).length :  Object.keys(this.props.enemyTeam).length
-    const aliveChinpokos = ally ? this.getNumberOfAliveChinpokos(this.props.allyTeam) : this.getNumberOfAliveChinpokos(this.props.enemyTeam)
+    const aliveChinpokos = ally ? getNumberOfAliveChinpokos(this.props.allyTeam) : getNumberOfAliveChinpokos(this.props.enemyTeam)
     const totalDeck = ally ? this.state.allyDeck.length : this.state.enemyDeck.length
     const totalDiscard = ally ? this.state.allyDiscard.length : this.state.enemyDiscard.length
     return (

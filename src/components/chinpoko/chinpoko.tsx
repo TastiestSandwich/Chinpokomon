@@ -49,6 +49,16 @@ export interface ChinpokoCard {
 	card: CardData
 }
 
+export function getNumberOfAliveChinpokos(team: {[id: number] : ChinpokoData}) : number {
+  let aliveChinpokos : number = 0
+  for(let index of Object.keys(team)) {
+    if (team[Number(index)].hp > 0) {
+      aliveChinpokos = aliveChinpokos + 1
+    }
+  }
+  return aliveChinpokos
+}
+
 export function getRandomChinpoko(id: number): ChinpokoData {
 	let index = Math.floor(Math.random() * ChinpokoList.length);
 	return getChinpokoData(ChinpokoList[index], id);
