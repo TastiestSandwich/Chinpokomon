@@ -383,5 +383,36 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Relocation"]
+	}],
+	"TIGRE": [{
+		lvl: 1,
+		card: CardList["Volt Switch"]
+	},{
+		lvl: 1,
+		card: CardList["Thunderwave"]
+	},{
+		lvl: 1,
+		card: CardList["Rest"]
+	},{
+		lvl: 1,
+		card: CardList["Body Slam"]
+	},{
+		lvl: 1,
+		card: CardList["Ice Shard"]
+	},{
+		lvl: 1,
+		card: CardList["Ice Slice"]
+	},{
+		lvl: 1,
+		card: CardList["Inertia Drain"]
+	},{
+		lvl: 1,
+		card: CardList["Thunder"]
+	},{
+		lvl: 1,
+		card: CardList["Hot Blood"]
+	},{
+		lvl: 1,
+		card: CardList["Stone Skin"]
 	}]
 }

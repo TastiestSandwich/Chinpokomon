@@ -221,6 +221,7 @@ class App extends React.Component<{}, AppState> {
           <TeamBuilder 
           changeView={this.changeView} 
           setTeam={this.setTeam} 
+          setDeckList={this.setDeckList}
           swapPlayers={this.swapPlayers}
           setPowerList={this.setPowerList}
           allyTeam={this.state.allyTeam} 

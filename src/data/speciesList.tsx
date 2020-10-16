@@ -14,6 +14,7 @@ import babosas from '../images/babosas.png'
 import aguila from '../images/aguila.png'
 import buho from '../images/buho.png'
 import conejo from '../images/conejo.png'
+import tigre from '../images/tigre.png'
 
 export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 	"BISONTE": {
@@ -145,5 +146,15 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseSPE: 60,
     biome: BiomeList["FIELD"],
     power: PowerList["Pivot"]
+  },
+  "TIGRE": {
+    speciesName: "TIGRE",
+    sprite: tigre,
+    baseHP: 80,
+    baseATK: 90,
+    baseDEF: 90,
+    baseSPE: 60,
+    biome: BiomeList["MOUNTAIN"],
+    power: PowerList["Electrify"]
   }
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppView, getPowerList } from '../../app';
+import { AppView, getPowerList, getDeckList } from '../../app';
 import { ChinpokoData, ChinpokoStoredData, getChinpokoData, getRandomChinpoko } from '../../components/chinpoko/chinpoko';
 import { CardInstance } from '../../components/card/card';
 import { BaseChinpokoList } from '../../data/speciesList';
@@ -59,6 +59,7 @@ function transformDataToInput(data: ChinpokoData): ChinpokoInputData {
 interface TeamBuilderProps {
   changeView: (view: AppView) => void
   setTeam: (team: {[id: number] : ChinpokoData}, ally: boolean) => void
+  setDeckList:  (deckList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
   setPowerList: (powerList: {[id: number] : CardInstance}, ally: boolean) => void
   allyTeam: {[id: number] : ChinpokoData}
@@ -100,6 +101,7 @@ export class TeamBuilder extends React.Component<TeamBuilderProps, TeamBuilderSt
     const team = transformInputArrayToTeam(input)
     this.props.setTeam(team, true);
     this.props.setPowerList(getPowerList(team), true)
+    this.props.setDeckList(getDeckList(team), true)
     this.setState({
       message: "Team submitted successfully!"
     })
