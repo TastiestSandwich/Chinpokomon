@@ -77,8 +77,13 @@ export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance
 	const indexStart = phaseNumber - 1;
 	const indexEnd = indexStart + instance.card.actions.length;
 	for (let i = indexStart; i < indexEnd; i++) {
-		// phase is only empty if it exists and action is null or empty
-		let isEmpty = phases[i] != undefined && (phases[i].action === null || phases[i].action?.effect.name === "EMPTY")
+		// check if phase exists
+		if (phases[i] == undefined) {
+			return false;
+		}
+		// check if card action is empty, or phase action is null or empty
+		let isEmpty = (phases[i].action === null || phases[i].action?.effect.name === "EMPTY")
+									|| instance.card.actions[i - indexStart]?.effect.name === "EMPTY"
 		if (!isEmpty) {
 			console.log("not enough unfilled phases")
 			return false;
@@ -98,13 +103,15 @@ export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | 
 		let index = phaseIndex + i
 		let action = instance.card.actions[i]
 		let isEmpty = action.effect.name === "EMPTY"
-		newPhases[index] = {
-			index: index + 1,
-			show: false,
-			instance: isEmpty ? null : instance,
-			action: isEmpty ? null : action,
-			isStart: i === 0 ? true : false,
-			isEnd: i === length - 1 ? true : false
+		if(!isEmpty) {
+			newPhases[index] = {
+				index: index + 1,
+				show: false,
+				instance: instance,
+				action: action,
+				isStart: i === 0 ? true : false,
+				isEnd: i === length - 1 ? true : false
+			}
 		}
 	}
 	return newPhases;

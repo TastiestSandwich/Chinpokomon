@@ -26,8 +26,8 @@ export function getRandomTeam(size: number) {
 
 function transformInputArrayToTeam(inputArray: Array<ChinpokoInputData>): {[id: number] : ChinpokoData} {
   const team: {[id: number] : ChinpokoData} = {};
-  for(let i=1; i <= inputArray.length; i++) {
-    team[i] = getChinpokoData(transformInputToStored(inputArray[i]), i);
+  for(let i=0; i < inputArray.length; i++) {
+    team[i+1] = getChinpokoData(transformInputToStored(inputArray[i]), i+1);
   }
   return team;
 }
