@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../old_style/engine.css';
-import { ChinpokoData, getChinpokoAtk, getChinpokoDef } from '../chinpoko/chinpoko';
+import { ChinpokoData, getChinpokoAtk, getChinpokoDef, getChinpokoSpe } from '../chinpoko/chinpoko';
 import { Type, } from '../type/type';
 import { findEffectiveness, findStab } from '../type/biome';
 import { CardData } from '../card/card'
@@ -39,6 +39,27 @@ export function effectHeal(card: CardData, action: CardAction, ally: ChinpokoDat
   }
   ally.hp = ally.hp + heal;
   console.log("Heals " + heal + " points of damage!");
+}
+
+export function effectStatAbsorb(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
+	let drop = calcStatMod(action.parameters.percentage, card.type, ally, action.parameters.ally ? null : enemy)
+	let target = action.parameters.ally ? ally : enemy
+	let user = action.parameters.ally ? enemy : ally
+	let stat = getStatString(action.parameters.stat)
+	drop = getChinpokoStatBoost(stat, target) * (1 / (1 + drop))
+	if (stat != "HP" && drop < Constants.minStatBoost) {
+		drop = Constants.minStatBoost
+	}
+	let oldStat = getChinpokoStat(stat, target)
+	setChinpokoStatBoost(drop, stat, target)
+	let newStat = getChinpokoStat(stat, target)
+	let diff = Math.floor(oldStat - newStat)
+	console.log("Absorbs " + diff + " " + stat + " from the enemy!")
+	let boost = calcReverseStatBoost(stat, diff, user)
+	if (stat != "HP" && boost > Constants.maxStatBoost) {
+		boost = Constants.maxStatBoost
+	}
+	setChinpokoStatBoost(boost, stat, user)
 }
 
 export function effectBoost(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
@@ -94,6 +115,23 @@ export function applyHpBoost(chinpoko: ChinpokoData) {
 	chinpoko.hp = Math.round(hp)
 }
 
+export function effectStatClear(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
+	let stats = getStatArray(action.parameters.stat)
+	let target = action.parameters.ally ? ally : enemy
+	for(let stat of stats) {
+		let boost = getChinpokoStatBoost(stat, target)
+		let baseBoost = stat === "HP" ? Constants.baseHpBoost : Constants.baseStatBoost
+		if (action.parameters.positive && boost > baseBoost) {
+			boost = baseBoost
+		}
+		if (action.parameters.negative && boost < baseBoost) {
+			boost = baseBoost
+		}
+		setChinpokoStatBoost(boost, stat, target)
+		console.log("Cleared " + stat + "!")
+	}
+}
+
 function calcDamage(power: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData):number {
 	if (power === undefined) {
 		return 0;
@@ -124,6 +162,15 @@ function calcHeal(percentage: number | undefined, type: Type, user: ChinpokoData
 	return heal;
 }
 
+function calcReverseStatBoost(stat: string | undefined, diff: number, user: ChinpokoData): number {
+	if (stat === undefined) {
+		return 0
+	}
+	let boost = getChinpokoStatBoost(stat, user)
+	let value = getChinpokoStat(stat, user)
+	return boost + (diff * boost / value)
+}
+
 export function calcStatMod(mod: number | undefined, type: Type, user: ChinpokoData, target: ChinpokoData | null) {
 	if (mod === undefined) {
 		return 0;
@@ -138,6 +185,16 @@ function getStatString(stat: string | undefined): string {
 		return getRandomStat()
 	} else {
 		return stat
+	}
+}
+
+function getStatArray(stat: string | undefined): Array<string> {
+	if (stat === undefined || stat === "RND") {
+		return [getRandomStat()]
+	} else if (stat === "ALL") {
+		return ["HP","ATK","DEF","SPE"]
+	} else {
+		return [stat]
 	}
 }
 
@@ -162,6 +219,21 @@ function getChinpokoStatBoost(stat: string | undefined, chinpoko: ChinpokoData):
 			return chinpoko.defBoost
 		case "SPE":
 			return chinpoko.speBoost
+		default:
+			return 1
+	}
+}
+
+function getChinpokoStat(stat: string | undefined, chinpoko: ChinpokoData): number {
+	switch (stat) {
+		case "HP":
+			return chinpoko.hp
+		case "ATK":
+			return getChinpokoAtk(chinpoko)
+		case "DEF":
+			return getChinpokoDef(chinpoko)
+		case "SPE":
+			return getChinpokoSpe(chinpoko)
 		default:
 			return 1
 	}

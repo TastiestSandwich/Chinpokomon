@@ -100,7 +100,10 @@ export const CardList: { [name:string] : CardData } = {
 			}
 		},{
 			effect: EffectList["CHANGE"],
-			parameters: {}
+			parameters: {
+				ally: true,
+				random: false
+			}
 		}]
 	},
 	"Earthquake": {
@@ -147,7 +150,10 @@ export const CardList: { [name:string] : CardData } = {
 		type: TypeList["WIND"],
 		actions: [{
 			effect: EffectList["CHANGE"],
-			parameters: {}
+			parameters: {
+				ally: true,
+				random: false
+			}
 		},{
 			effect: EffectList["DAMAGE"],
 			parameters: {
@@ -203,7 +209,10 @@ export const CardList: { [name:string] : CardData } = {
 			}
 		},{
 			effect: EffectList["CHANGE"],
-			parameters: {}
+			parameters: {
+				ally: true,
+				random: false
+			}
 		},{
 			effect: EffectList["WAIT"],
 			parameters: {}
@@ -215,7 +224,10 @@ export const CardList: { [name:string] : CardData } = {
 		type: TypeList["NEUTRAL"],
 		actions: [{
 			effect: EffectList["CHANGE"],
-			parameters: {}
+			parameters: {
+				ally: true,
+				random: false
+			}
 		}]
 	},
 	"Body Slam": {
@@ -477,7 +489,7 @@ export const CardList: { [name:string] : CardData } = {
 	"Demolition": {
 		name: "Demolition",
 		text: "Tears down the enemy, dropping their defense",
-		type: TypeList["ARTIFICIAL"],
+		type: TypeList["EARTH"],
 		actions: [{
 			effect: EffectList["WAIT"],
 			parameters: {}
@@ -675,7 +687,10 @@ export const CardList: { [name:string] : CardData } = {
 			}
 		},{
 			effect: EffectList["CHANGE"],
-			parameters: {}
+			parameters: {
+				ally: true,
+				random: false
+			}
 		}]
 	},
 	"Baton Pass": {
@@ -684,13 +699,187 @@ export const CardList: { [name:string] : CardData } = {
 		type: TypeList["MISTERY"],
 		actions: [{
 			effect: EffectList["CHANGE"],
-			parameters: {}
+			parameters: {
+				ally: true,
+				random: false
+			}
 		},{
 			effect: EffectList["BOOST"],
 			parameters: {
 				stat: "RND",
 				ally: true,
 				percentage: 0.4
+			}
+		}]
+	},
+	"Thunder": {
+		name: "Thunder",
+		text: "Strikes the enemy with lightning, slightly paralyzing",
+		type: TypeList["ELECTRIC"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 90
+			}
+		},{
+			effect: EffectList["DROP"],
+			parameters: {
+				stat: "SPE",
+				percentage: 0.3,
+				ally: false
+			}
+		}]
+	},
+	"Inertia Drain": {
+		name: "Inertia Drain",
+		text: "Absorbs the enemy's energy, recharging itself",
+		type: TypeList["ELECTRIC"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["STATSORB"],
+			parameters: {
+				stat: "SPE",
+				percentage: 0.3
+			}
+		},{
+			effect: EffectList["DRAW"],
+			parameters: {
+				number: 1,
+				ally: true
+			}
+		}]
+	},
+	"Calming Breeze": {
+		name: "Calming Breeze",
+		text: "A gentle breeze calms the enemy, clearing their boosted stats",
+		type: TypeList["WIND"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["CLEAR"],
+			parameters: {
+				ally: false,
+				stat: "ALL",
+				positive: true,
+				negative: false
+			}
+		},{
+			effect: EffectList["DRAW"],
+			parameters: {
+				number: 1,
+				ally: true
+			}
+		}]
+	},
+	"Clear Water": {
+		name: "Clear Water",
+		text: "Clean and refreshing water clears the user's negative boosts",
+		type: TypeList["WATER"],
+		actions: [{
+			effect: EffectList["CLEAR"],
+			parameters: {
+				ally: true,
+				stat: "ALL",
+				positive: false,
+				negative: true
+			}
+		},{
+			effect: EffectList["DRAW"],
+			parameters: {
+				number: 1,
+				ally: true
+			}
+		}]
+	},
+	"Tornado": {
+		name: "Tornado",
+		text: "A tornado rushes through the enemy, hitting as it comes and goes",
+		type: TypeList["WIND"],
+		actions: [{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 30
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 40
+			}
+		}]
+	},
+	"Ice Slice": {
+		name: "Ice Slice",
+		text: "The user slices the enemy with sharp ice, that becomes even sharper",
+		type: TypeList["COLD"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}	
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 70
+			}
+		},{
+			effect: EffectList["BOOST"],
+			parameters: {
+				stat: "ATK",
+				ally: true,
+				percentage: 0.3
+			}
+		}]
+	},
+	"Relocation": {
+		name: "Relocation",
+		text: "The enemy is forcefully displaced against its will",
+		type: TypeList["ARTIFICIAL"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 60
+			}
+		},{
+			effect: EffectList["CHANGE"],
+			parameters: {
+				ally: false,
+				random: true
+			}
+		}]
+	},
+	"Toxic Thoughts": {
+		name: "Toxic Thoughts",
+		text: "Poisons the enemy's mind, discarding one of their cards",
+		type: TypeList["TOXIC"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DISCARD"],
+			parameters: {
+				ally: false
 			}
 		}]
 	}

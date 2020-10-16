@@ -51,6 +51,9 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Vine Whip"]
+	},{
+		lvl: 1,
+		card: CardList["Calming Breeze"]
 	}],
 	"LAGARTO": [{
 		lvl: 1,
@@ -76,6 +79,12 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Ember"]
+	},{
+		lvl: 1,
+		card: CardList["Demolition"]
+	},{
+		lvl: 1,
+		card: CardList["Tornado"]
 	}],
 	"NUTRIA": [{
 		lvl: 1,
@@ -101,6 +110,9 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Vine Whip"]
+	},{
+		lvl: 1,
+		card: CardList["Clear Water"]
 	}],
 	"GATO": [{
 		lvl: 1,
@@ -151,6 +163,12 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Quick Attack"]
+	},{
+		lvl: 1,
+		card: CardList["Inertia Drain"]
+	},{
+		lvl: 1,
+		card: CardList["Relocation"]
 	}],
 	"MORSA": [{
 		lvl: 1,
@@ -176,6 +194,12 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Hydro Pump"]
+	},{
+		lvl: 1,
+		card: CardList["Demolition"]
+	},{
+		lvl: 1,
+		card: CardList["Ice Slice"]
 	}],
 	"ESCUALO": [{
 		lvl: 1,
@@ -201,6 +225,15 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Healing Pool"]
+	},{
+		lvl: 1,
+		card: CardList["Demolition"]
+	},{
+		lvl: 1,
+		card: CardList["Clear Water"]
+	},{
+		lvl: 1,
+		card: CardList["Ice Slice"]
 	}],
 	"SERPIENTE": [{
 		lvl: 1,
@@ -226,6 +259,9 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Sleight of Hand"]
+	},{
+		lvl: 1,
+		card: CardList["Toxic Thoughts"]
 	}],
 	"BABOSAS": [{
 		lvl: 1,
@@ -251,6 +287,9 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Ember"]
+	},{
+		lvl: 1,
+		card: CardList["Toxic Thoughts"]
 	}],
 	"CUERVO": [{
 		lvl: 1,
@@ -272,10 +311,16 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 		card: CardList["Fast Change"]
 	},{
 		lvl: 1,
-		card: CardList["Demolition"]
+		card: CardList["Leech Seed"]
 	},{
 		lvl: 1,
-		card: CardList["Leech Seed"]
+		card: CardList["Calming Breeze"]
+	},{
+		lvl: 1,
+		card: CardList["Tornado"]
+	},{
+		lvl: 1,
+		card: CardList["Relocation"]
 	}],
 	"AGUILA": [{
 		lvl: 1,
@@ -291,9 +336,6 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 		card: CardList["Stone Skin"]
 	},{
 		lvl: 1,
-		card: CardList["Volt Switch"]
-	},{
-		lvl: 1,
 		card: CardList["Quick Attack"]
 	},{
 		lvl: 1,
@@ -301,6 +343,18 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Ice Shard"]
+	},{
+		lvl: 1,
+		card: CardList["Demolition"]
+	},{
+		lvl: 1,
+		card: CardList["Thunder"]
+	},{
+		lvl: 1,
+		card: CardList["Tornado"]
+	},{
+		lvl: 1,
+		card: CardList["Ice Slice"]
 	}],
 	"CONEJO": [{
 		lvl: 1,
@@ -326,5 +380,8 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Sneaky Peek"]
+	},{
+		lvl: 1,
+		card: CardList["Relocation"]
 	}]
 }

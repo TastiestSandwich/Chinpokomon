@@ -12,7 +12,10 @@ export const PowerList: { [name:string] : CardData } = {
       parameters: {}
     },{
       effect: EffectList["CHANGE"],
-      parameters: {}
+      parameters: {
+        ally: true,
+        random: false
+      }
     },{
       effect: EffectList["WAIT"],
       parameters: {}
@@ -232,7 +235,10 @@ export const PowerList: { [name:string] : CardData } = {
     type: TypeList["NEUTRAL"],
     actions: [{
       effect: EffectList["CHANGE"],
-      parameters: {}
+      parameters: {
+        ally: true,
+        random: false
+      }
     },{
       effect: EffectList["EMPTY"],
       parameters: {}
@@ -244,7 +250,10 @@ export const PowerList: { [name:string] : CardData } = {
       parameters: {}
     },{
       effect: EffectList["CHANGE"],
-      parameters: {}
+      parameters: {
+        ally: true,
+        random: false
+      }
     }]
   },
   "Electrify": {

@@ -19,6 +19,9 @@ export interface ActionParameters {
   ally?: boolean
   number?: number
   type?: Type
+  positive?: boolean
+  negative?: boolean
+  random?: boolean
 }
 
 interface ActionSymbolProps {

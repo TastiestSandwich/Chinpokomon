@@ -5,7 +5,7 @@ import { CardInstance, shuffle, CardSource, getCardInstance, getNumberOfDiscarda
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData, getChinpokoSpe, getNumberOfAliveChinpokos } from '../../components/chinpoko/chinpoko';
 import { getPhaseGroupAmount, PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
-import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop, effectRegen, effectDegen, applyHpBoost, effectDot } from '../../components/engine/engine';
+import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop, effectRegen, effectDegen, applyHpBoost, effectDot, effectStatAbsorb, effectStatClear } from '../../components/engine/engine';
 import { CardAction } from '../../components/action/action';
 import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
@@ -247,7 +247,7 @@ export class Game extends React.Component<GameProps, GameState> {
     if(action.effect.name === "DAMAGE") { effectDamage(instance.card, action, ally, enemy); }
     else if(action.effect.name === "ABSORB") { effectAbsorb(instance.card, action, ally, enemy); }
     else if(action.effect.name === "HEAL") { effectHeal(instance.card, action, ally); }
-    else if(action.effect.name === "CHANGE") { this.effectChangeModal(isAlly); }
+    else if(action.effect.name === "CHANGE") { this.effectChange(action); }
     else if(action.effect.name === "BOOST") { effectBoost(instance.card, action, ally, enemy) }
     else if(action.effect.name === "DROP") { effectDrop(instance.card, action, ally, enemy) }
     else if(action.effect.name === "REGEN") { effectRegen(instance.card, action, ally) }
@@ -257,6 +257,8 @@ export class Game extends React.Component<GameProps, GameState> {
     else if(action.effect.name === "COPYCARD") { this.effectCopyCard(action, isAlly) }
     else if(action.effect.name === "DRAW") { this.effectDraw(action, isAlly) }
     else if(action.effect.name === "LOOK") { this.effectLookCard(action, isAlly) }
+    else if(action.effect.name === "STATSORB") { effectStatAbsorb(instance.card, action, ally, enemy)}
+    else if(action.effect.name === "CLEAR") { effectStatClear(instance.card, action, ally, enemy)}
     else if(action.effect.name === "WAIT") { }
   }
 
@@ -398,6 +400,15 @@ export class Game extends React.Component<GameProps, GameState> {
     } else {
       console.log("There are no chinpokos left!")
       return false;
+    }
+  }
+
+  effectChange(action: CardAction) {
+    const ally = action.parameters.ally ? true : false
+    if (action.parameters.random) {
+      this.randomChange(ally)
+    } else {
+      this.effectChangeModal(ally)
     }
   }
 

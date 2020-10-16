@@ -64,5 +64,13 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"TYPESWAP": {
 		name: "TYPESWAP",
 		symbol: "fas fa-retweet"
+	},
+	"STATSORB": {
+		name: "STATSORB",
+		symbol: "fas fa-undo"
+	},
+	"CLEAR": {
+		name: "CLEAR",
+		symbol: "fas fa-hand-sparkles"
 	}
 };
