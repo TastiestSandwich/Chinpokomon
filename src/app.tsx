@@ -40,7 +40,7 @@ export function getDeckList(team: {[id: number] : ChinpokoData}) : {[id: number]
   for(let card of ChinpokoCardList["TRAINER"]) {
     deckList[id] = getCardInstance(id, card.card, true, false, CardSource.DECK, 0)
     id++
-  }
+  }  
 
   for(let chinpoko of Object.values(team)) {
     for(let card of ChinpokoCardList[chinpoko.storedData.species.speciesName]) {
@@ -222,6 +222,7 @@ class App extends React.Component<{}, AppState> {
           changeView={this.changeView} 
           setTeam={this.setTeam} 
           setDeckList={this.setDeckList}
+          setDeck={this.setDeck}
           swapPlayers={this.swapPlayers}
           setPowerList={this.setPowerList}
           allyTeam={this.state.allyTeam} 

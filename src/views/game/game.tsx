@@ -1,17 +1,18 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import { CardInstance, shuffle, CardSource, getCardInstance, getNumberOfDiscardableCards } from '../../components/card/card';
+import { CardInstance, shuffle, CardSource, getCardInstance, getNumberOfDiscardableCards, swapCardType, swapCardAction } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData, getChinpokoSpe, getNumberOfAliveChinpokos } from '../../components/chinpoko/chinpoko';
 import { getPhaseGroupAmount, PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
 import { Engine, effectDamage, effectHeal, effectAbsorb, effectBoost, effectDrop, effectRegen, effectDegen, applyHpBoost, effectDot, effectStatAbsorb, effectStatClear } from '../../components/engine/engine';
-import { CardAction } from '../../components/action/action';
+import { CardAction, ActionEffect, ActionParameters } from '../../components/action/action';
 import Power from '../../components/power/power';
 import { Constants } from '../../data/const';
 import { Modal, ModalData, ModalType, renderModalContent } from '../../components/modal/modal';
 import { Cyborg, getCyborgPhases } from '../../components/cyborg/cyborg';
 import { Info } from '../../components/info/info';
+import { Type } from '../../components/type/type';
 
 export const enum GameStage {
   PLAY,
@@ -259,6 +260,8 @@ export class Game extends React.Component<GameProps, GameState> {
     else if(action.effect.name === "LOOK") { this.effectLookCard(action, isAlly) }
     else if(action.effect.name === "STATSORB") { effectStatAbsorb(instance.card, action, ally, enemy)}
     else if(action.effect.name === "CLEAR") { effectStatClear(instance.card, action, ally, enemy)}
+    else if(action.effect.name === "TYPESWAP") { this.effectTypeSwap(action, isAlly)}
+    else if(action.effect.name === "ACTIONSWAP") { this.effectActionSwap(action, isAlly)}
     else if(action.effect.name === "WAIT") { }
   }
 
@@ -559,6 +562,94 @@ export class Game extends React.Component<GameProps, GameState> {
         }
       }))
     }
+  }
+
+  effectTypeSwap(action: CardAction, isAlly: boolean) {
+    const ally : boolean = action.parameters.ally === isAlly
+    if (this.props.cyborg && ally) {
+      // TODO make cyborg typeswap card
+    } else {
+      // cant copy card when no copiable (discardable) cards in hand
+      const cardAmount = ally ? getNumberOfDiscardableCards(this.state.allyHand, this.props.allyDeckList)
+                              : getNumberOfDiscardableCards(this.state.enemyHand, this.props.enemyDeckList)
+      if (cardAmount <= 0) {
+        return
+      }
+      const type = action.parameters.type
+      if (type === undefined) {
+        return
+      }
+      this.setState((state) => ({
+        stage: GameStage.MODAL,
+        previousStage: state.stage,
+        modalData: {
+          ally: ally,
+          type: ModalType.HAND,
+          title: "CHOOSE A CARD TO CHANGE ITS TYPE TO " + type.name,
+          onClick: this.handleTypeSwapClick(type),
+          onClose: this.handleModalClose
+        }
+      }))
+    }
+  }
+
+  handleTypeSwapClick = (type: Type) => (id: number, fromAlly: boolean) => {
+    // fromAlly references the hand being typeswapped
+    const allyDeck = fromAlly ? {...this.props.allyDeckList} : {...this.props.enemyDeckList}
+    const card = allyDeck[id]
+    const newCard = swapCardType(card, type)
+    allyDeck[id] = newCard
+    this.props.setDeckList(allyDeck, fromAlly)
+
+    this.setState((state) => ({
+      stage: state.previousStage,
+      modalData: null
+    }))
+  }
+
+  effectActionSwap(action: CardAction, isAlly: boolean) {
+    const ally: boolean = action.parameters.ally === isAlly
+    if (this.props.cyborg && ally) {
+      //TODO make cyborg actionswap card
+    } else {
+      // cant typeswap card when no cards in hand
+      const cardAmount = ally ? getNumberOfDiscardableCards(this.state.allyHand, this.props.allyDeckList)
+                              : getNumberOfDiscardableCards(this.state.enemyHand, this.props.enemyDeckList)
+      if (cardAmount <= 0) {
+        return
+      }
+      const oldEffect = action.parameters.oldEffect
+      const newEffect = action.parameters.newEffect
+      const newParameters = action.parameters.newParameters
+      if(oldEffect === undefined || newEffect === undefined || newParameters === undefined) {
+        return
+      }
+      this.setState((state) => ({
+        stage: GameStage.MODAL,
+        previousStage: state.stage,
+        modalData: {
+          ally: ally,
+          type: ModalType.HAND,
+          title: "CHOOSE A CARD TO CHANGE " + oldEffect.name + " TO " + newEffect.name,
+          onClick: this.handleActionSwapClick(oldEffect, newEffect, newParameters),
+          onClose: this.handleModalClose
+        }
+      }))
+    }
+  }
+
+  handleActionSwapClick = (oldEffect: ActionEffect, newEffect: ActionEffect, newParameters: ActionParameters) => (id: number, fromAlly: boolean) => {
+    // fromAlly references the hand being actionswapped
+    const allyDeck = fromAlly ? {...this.props.allyDeckList} : {...this.props.enemyDeckList}
+    const card = {...allyDeck[id]}
+    const newCard = swapCardAction(card, oldEffect, newEffect, newParameters)
+    allyDeck[id] = newCard
+    this.props.setDeckList({...allyDeck}, fromAlly)
+
+    this.setState((state) => ({
+      stage: state.previousStage,
+      modalData: null
+    }))
   }
 
   handleModalClose = () => {

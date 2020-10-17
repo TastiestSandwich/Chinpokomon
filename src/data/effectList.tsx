@@ -72,5 +72,9 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"CLEAR": {
 		name: "CLEAR",
 		symbol: "fas fa-hand-sparkles"
+	},
+	"ACTIONSWAP": {
+		name: "ACTIONSWAP",
+		symbol: "fas fa-retweet"
 	}
 };

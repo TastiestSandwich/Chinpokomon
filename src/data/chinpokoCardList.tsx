@@ -321,6 +321,9 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Relocation"]
+	},{
+		lvl: 1,
+		card: CardList["Quicken"]
 	}],
 	"AGUILA": [{
 		lvl: 1,
@@ -383,6 +386,9 @@ export const ChinpokoCardList: { [name:string] : Array<ChinpokoCard> } = {
 	},{
 		lvl: 1,
 		card: CardList["Relocation"]
+	},{
+		lvl: 1,
+		card: CardList["Quicken"]
 	}],
 	"TIGRE": [{
 		lvl: 1,

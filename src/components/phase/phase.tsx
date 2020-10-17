@@ -99,6 +99,7 @@ export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | 
 	}
 	const phaseIndex = phaseNumber - 1;
 	const length = instance.card.actions.length;
+	let startFound: boolean = false
 	for (let i = 0; i < length; i++) {
 		let index = phaseIndex + i
 		let action = instance.card.actions[i]
@@ -109,9 +110,10 @@ export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | 
 				show: false,
 				instance: instance,
 				action: action,
-				isStart: i === 0 ? true : false,
-				isEnd: i === length - 1 ? true : false
+				isStart: !startFound,
+				isEnd: i === length - 1
 			}
+			startFound = true
 		}
 	}
 	return newPhases;

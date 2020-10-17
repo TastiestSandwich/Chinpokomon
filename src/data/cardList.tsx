@@ -882,5 +882,22 @@ export const CardList: { [name:string] : CardData } = {
 				ally: false
 			}
 		}]
+	},
+	"Quicken": {
+		name: "Quicken",
+		text: "The user prepares a flurry of actions, replacing wait actions by empty actions in a card",
+		type: TypeList["WIND"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["ACTIONSWAP"],
+			parameters: {
+				ally: true,
+				oldEffect: EffectList["WAIT"],
+				newEffect: EffectList["EMPTY"],
+				newParameters: {}
+			}
+		}]
 	}
 }

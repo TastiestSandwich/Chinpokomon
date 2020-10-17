@@ -22,6 +22,9 @@ export interface ActionParameters {
   positive?: boolean
   negative?: boolean
   random?: boolean
+  oldEffect?: ActionEffect
+  newEffect?: ActionEffect
+  newParameters?: ActionParameters
 }
 
 interface ActionSymbolProps {

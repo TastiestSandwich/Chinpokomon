@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppView, getPowerList, getDeckList } from '../../app';
+import { AppView, getPowerList, getDeckList, getRandomDeck } from '../../app';
 import { ChinpokoData, ChinpokoStoredData, getChinpokoData, getRandomChinpoko } from '../../components/chinpoko/chinpoko';
 import { CardInstance } from '../../components/card/card';
 import { BaseChinpokoList } from '../../data/speciesList';
@@ -60,6 +60,7 @@ interface TeamBuilderProps {
   changeView: (view: AppView) => void
   setTeam: (team: {[id: number] : ChinpokoData}, ally: boolean) => void
   setDeckList:  (deckList: {[id: number] : CardInstance}, ally: boolean) => void
+  setDeck: (deck: Array<number>, ally: boolean) => void
   swapPlayers: () => void
   setPowerList: (powerList: {[id: number] : CardInstance}, ally: boolean) => void
   allyTeam: {[id: number] : ChinpokoData}
@@ -101,7 +102,9 @@ export class TeamBuilder extends React.Component<TeamBuilderProps, TeamBuilderSt
     const team = transformInputArrayToTeam(input)
     this.props.setTeam(team, true);
     this.props.setPowerList(getPowerList(team), true)
-    this.props.setDeckList(getDeckList(team), true)
+    const deckList = getDeckList(team)
+    this.props.setDeckList(deckList, true)
+    this.props.setDeck(getRandomDeck(deckList, team), true)
     this.setState({
       message: "Team submitted successfully!"
     })

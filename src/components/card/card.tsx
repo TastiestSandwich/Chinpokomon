@@ -3,8 +3,7 @@ import './card.scss';
 import { GameStage } from '../../views/game/game';
 import { Type, TypeSymbol } from '../type/type';
 import { CardList } from '../../data/cardList';
-import { CardAction } from '../action/action';
-import { ActionSymbol } from '../action/action';
+import { CardAction, ActionSymbol, ActionEffect, ActionParameters } from '../action/action';
 
 export function shuffle(array: Array<number>) {
 	for (let i = array.length - 1; i > 0; i--) {
@@ -34,6 +33,42 @@ export interface CardData {
   text: string
   type: Type
   actions: Array<CardAction>
+}
+
+export function swapCardAction(card: CardInstance, oldEffect: ActionEffect, newEffect: ActionEffect, newParameters: ActionParameters) {
+	let actions: Array<CardAction> = []
+	for(let action of card.card.actions) {
+		let newAction: CardAction = {
+			effect: action.effect,
+			parameters: action.parameters
+		}
+		if(action.effect.name === oldEffect.name) {
+			newAction.effect = newEffect
+			newAction.parameters = newParameters
+		}
+		actions.push(newAction)
+	}
+	let newCardData: CardData = {
+		name: card.card.name,
+		text: card.card.text,
+		type: card.card.type,
+		actions: actions
+	}
+	let newCard: CardInstance = {
+		card: newCardData,
+		id: card.id,
+		isClicked: card.isClicked,
+		isRemovable: card.isRemovable,
+		source: card.source,
+		isTemporal: card.isTemporal,
+		chinpokoId: card.chinpokoId
+	}
+	return newCard
+}
+
+export function swapCardType(card: CardInstance, type: Type){
+	card.card.type = type
+	return card
 }
 
 export function getNumberOfDiscardableCards(hand: Array<number>, deckList: {[id: number] : CardInstance}): number {
