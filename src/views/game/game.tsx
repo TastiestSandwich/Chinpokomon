@@ -248,7 +248,7 @@ export class Game extends React.Component<GameProps, GameState> {
     if(action.effect.name === "DAMAGE") { effectDamage(instance.card, action, ally, enemy); }
     else if(action.effect.name === "ABSORB") { effectAbsorb(instance.card, action, ally, enemy); }
     else if(action.effect.name === "HEAL") { effectHeal(instance.card, action, ally); }
-    else if(action.effect.name === "CHANGE") { this.effectChange(action); }
+    else if(action.effect.name === "CHANGE") { this.effectChange(action, isAlly); }
     else if(action.effect.name === "BOOST") { effectBoost(instance.card, action, ally, enemy) }
     else if(action.effect.name === "DROP") { effectDrop(instance.card, action, ally, enemy) }
     else if(action.effect.name === "REGEN") { effectRegen(instance.card, action, ally) }
@@ -406,8 +406,8 @@ export class Game extends React.Component<GameProps, GameState> {
     }
   }
 
-  effectChange(action: CardAction) {
-    const ally = action.parameters.ally ? true : false
+  effectChange(action: CardAction, isAlly: boolean) {
+    const ally = action.parameters.ally == isAlly
     if (action.parameters.random) {
       this.randomChange(ally)
     } else {
